@@ -1,0 +1,118 @@
+@import '../../styles/variables.scss';
+@import '../../styles/variables-theme.scss';
+@import '../../styles/mixins.scss';
+
+.toastContainer {
+  position: fixed;
+  top: $spacing-6;
+  right: $spacing-6;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  max-width: 400px;
+  
+  @include mobile {
+    top: $spacing-4;
+    right: $spacing-4;
+    left: $spacing-4;
+    max-width: none;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  background: white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  border-left: 4px solid;
+  animation: slideInRight 0.3s ease;
+  min-width: 300px;
+  
+  @include mobile {
+    min-width: auto;
+  }
+  
+  &.success {
+    border-left-color: $success;
+    
+    .icon {
+      color: $success;
+    }
+  }
+  
+  &.error {
+    border-left-color: $error;
+    
+    .icon {
+      color: $error;
+    }
+  }
+  
+  &.warning {
+    border-left-color: $warning;
+    
+    .icon {
+      color: $warning;
+    }
+  }
+  
+  &.info {
+    border-left-color: $info;
+    
+    .icon {
+      color: $info;
+    }
+  }
+}
+
+.icon {
+  font-size: $text-xl;
+  flex-shrink: 0;
+}
+
+.message {
+  flex: 1;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gray-800;
+  line-height: $leading-snug;
+}
+
+.closeButton {
+  @include button-reset;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $text-sm;
+  color: $gray-500;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  
+  &:hover {
+    background: $gray-100;
+    color: $gray-700;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $primary-500;
+    outline-offset: 2px;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

@@ -1,0 +1,573 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.transactionForm {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.formSteps {
+  display: flex;
+  background: $primary-100;
+  border-radius: $radius-love;
+  overflow: hidden;
+  margin-bottom: $spacing-6;
+
+  .step {
+    flex: 1;
+    padding: $spacing-4;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+
+    &.active {
+      background: $primary-500;
+      color: white;
+
+      .stepNumber {
+        background: white;
+        color: $primary-500;
+      }
+    }
+
+    &.completed {
+      background: $success;
+      color: white;
+
+      .stepNumber {
+        background: white;
+        color: $success;
+      }
+    }
+
+    &:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 60%;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .stepNumber {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: white;
+      color: $primary-500;
+      margin: 0 auto $spacing-2;
+      font-weight: $font-bold;
+      transition: all 0.3s ease;
+    }
+
+    .stepTitle {
+      font-size: $text-sm;
+      font-weight: $font-medium;
+    }
+  }
+}
+
+.formContent {
+  background: white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-love;
+  padding: $spacing-6;
+
+  @include mobile {
+    padding: $spacing-4;
+  }
+}
+
+.formStep {
+  display: none;
+
+  &.active {
+    display: block;
+    animation: fadeInUp 0.5s ease;
+  }
+}
+
+.step {
+  .stepTitle {
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-2;
+    text-align: center;
+  }
+
+  .stepDescription {
+    color: $gray-600;
+    text-align: center;
+    font-size: $text-sm;
+    line-height: $leading-relaxed;
+    margin-bottom: $spacing-6;
+  }
+}
+
+// Step 1: Amount
+.amountInputContainer {
+  position: relative;
+  margin-bottom: $spacing-6;
+
+  .currencySymbol {
+    position: absolute;
+    left: $spacing-4;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: $text-2xl;
+    color: $primary-500;
+    font-weight: $font-bold;
+  }
+
+  .amountInput {
+    width: 100%;
+    padding: $spacing-5 $spacing-4 $spacing-5 3rem;
+    border: 3px solid $primary-200;
+    border-radius: $radius-love;
+    font-size: $text-3xl;
+    font-family: $font-mono;
+    font-weight: $font-bold;
+    text-align: center;
+    background: linear-gradient(135deg, white, $primary-50);
+    transition: all 0.3s ease;
+    color: $gray-900;
+    
+    // Webkit用の数値入力スピナーを非表示
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    // Firefox用
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-500;
+      box-shadow: $shadow-love;
+      background: white;
+      transform: scale(1.02);
+    }
+
+    &::placeholder {
+      color: $gray-300;
+      font-size: $text-2xl;
+    }
+    
+    // 値が入力されている時のスタイル
+    &:not(:placeholder-shown) {
+      color: $primary-700;
+    }
+  }
+}
+
+.amountSuggestions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: $spacing-2;
+  margin-bottom: $spacing-6;
+
+  .suggestionBtn {
+    padding: $spacing-3;
+    border: 2px solid $primary-200;
+    background: white;
+    border-radius: $radius-lg;
+    font-family: $font-mono;
+    font-weight: $font-medium;
+    color: $primary-600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: $primary-500;
+      background: $primary-50;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.transactionTypeSelector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-4;
+
+  .typeOption {
+    padding: $spacing-4;
+    border: 2px solid $gray-200;
+    border-radius: $radius-love;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &.selected {
+      border-color: $primary-500;
+      background: $primary-50;
+    }
+
+    .typeIcon {
+      font-size: 2rem;
+      margin-bottom: $spacing-2;
+    }
+
+    .typeTitle {
+      font-weight: $font-semibold;
+      color: $gray-700;
+    }
+  }
+}
+
+// Step 2: Category
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-3;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: $spacing-2;
+  margin-bottom: $spacing-4;
+
+  @include mobile {
+    grid-template-columns: repeat(3, 1fr);
+    max-height: 300px;
+  }
+
+  .categoryOption {
+    padding: $spacing-2 $spacing-1;
+    border: 2px solid $gray-200;
+    border-radius: $radius-lg;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    position: relative;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &.selected {
+      border-color: $primary-500;
+      background: $primary-50;
+      transform: scale(1.05);
+    }
+
+    &.loveCategory {
+      border-color: $love-red;
+      background: linear-gradient(135deg, white, #ffe4e6);
+
+      &.selected {
+        border-color: $love-red;
+        background: linear-gradient(135deg, #ffe4e6, #fecaca);
+      }
+    }
+
+    .categoryIcon {
+      font-size: 1.25rem;
+      margin-bottom: $spacing-1;
+    }
+
+    .categoryName {
+      font-size: $text-xs;
+      font-weight: $font-medium;
+      color: $gray-700;
+      line-height: 1.2;
+    }
+  }
+}
+
+// Step 3: Details
+.sharingSelector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-4;
+  margin-bottom: $spacing-6;
+
+  .sharingOption {
+    padding: $spacing-4;
+    border: 2px solid $gray-200;
+    border-radius: $radius-love;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &.selected {
+      border-color: $primary-500;
+      background: $primary-50;
+    }
+
+    .sharingIcon {
+      font-size: 2rem;
+      margin-bottom: $spacing-2;
+    }
+
+    .sharingTitle {
+      font-weight: $font-semibold;
+      color: $gray-700;
+      margin-bottom: $spacing-1;
+    }
+
+    .sharingDescription {
+      font-size: $text-sm;
+      color: $gray-500;
+    }
+  }
+}
+
+.sharedDetails {
+  display: none;
+  padding: $spacing-4;
+  background: $secondary-50;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-6;
+
+  &.active {
+    display: block;
+    animation: slideDown 0.3s ease;
+  }
+
+  .detailsTitle {
+    font-weight: $font-semibold;
+    color: $gray-700;
+    margin-bottom: $spacing-3;
+
+    &::before {
+      content: '👫 ';
+    }
+  }
+
+  .splitOptions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-2;
+    margin-bottom: $spacing-4;
+
+    .splitOption {
+      padding: $spacing-2;
+      border: 1px solid $gray-300;
+      border-radius: $radius-md;
+      text-align: center;
+      cursor: pointer;
+      font-size: $text-sm;
+      transition: all 0.3s ease;
+
+      &.selected {
+        border-color: $secondary-500;
+        background: white;
+      }
+    }
+  }
+
+  .amountInputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-3;
+    margin-bottom: $spacing-4;
+  }
+}
+
+.inputGroup {
+  margin-bottom: $spacing-4;
+
+  label {
+    display: block;
+    font-size: $text-sm;
+    font-weight: $font-medium;
+    color: $gray-700;
+    margin-bottom: $spacing-2;
+  }
+
+  .input {
+    width: 100%;
+    padding: $spacing-3;
+    border: 2px solid $gray-200;
+    border-radius: $radius-lg;
+    font-size: $text-base;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-500;
+      box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+    }
+  }
+
+  input[type="number"] {
+    font-family: $font-mono;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+}
+
+.loveRating {
+  margin-bottom: $spacing-6;
+  text-align: center;
+
+  .ratingTitle {
+    font-weight: $font-semibold;
+    color: $gray-700;
+    margin-bottom: $spacing-3;
+
+    &::before {
+      content: '💕 ';
+    }
+  }
+
+  .ratingStars {
+    display: flex;
+    justify-content: center;
+    gap: $spacing-2;
+
+    .star {
+      font-size: 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: none;
+      border: none;
+      padding: 0;
+
+      &.active {
+        color: $love-gold;
+        transform: scale(1.2);
+      }
+
+      &.inactive {
+        color: $gray-300;
+      }
+
+      &:hover {
+        transform: scale(1.3);
+      }
+    }
+  }
+}
+
+.formNavigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: $spacing-8;
+
+  .navBtn {
+    @include button-base;
+    padding: $spacing-3 $spacing-6;
+    border-radius: $radius-love;
+    font-weight: $font-medium;
+    transition: all 0.3s ease;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &--prev {
+      background: transparent;
+      border: 2px solid $primary-500;
+      color: $primary-500;
+
+      &:hover:not(:disabled) {
+        background: $primary-50;
+        transform: translateY(-1px);
+      }
+    }
+
+    &--next {
+      background: $gradient-love;
+      color: white;
+      box-shadow: $shadow-md;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: $shadow-love-hover;
+      }
+    }
+
+    &--submit {
+      background: $gradient-special;
+      color: white;
+      font-size: $text-lg;
+      padding: $spacing-4 $spacing-8;
+      box-shadow: $shadow-special;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: $shadow-special;
+      }
+    }
+  }
+
+  .progressIndicator {
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+
+    .progressDot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: $gray-300;
+      transition: all 0.3s ease;
+
+      &.active {
+        background: $primary-500;
+        width: 24px;
+        border-radius: 4px;
+      }
+
+      &.completed {
+        background: $success;
+      }
+    }
+  }
+}
+
+.error {
+  color: $error;
+  font-size: $text-sm;
+  margin-top: $spacing-1;
+}
+
+.hiddenInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}

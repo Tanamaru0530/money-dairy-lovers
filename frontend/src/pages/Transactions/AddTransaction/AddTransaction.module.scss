@@ -1,0 +1,188 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.addTransactionPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $primary-50, $secondary-50);
+  padding: $spacing-6;
+  padding-top: 0; // ナビゲーション分の調整
+
+  .pageWrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: $spacing-6;
+  }
+
+  @include mobile {
+    padding: $spacing-4;
+    padding-top: 0;
+    
+    .pageWrapper {
+      padding-top: $spacing-4;
+    }
+  }
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  margin-bottom: $spacing-6;
+
+  .backButton {
+    @include button-base;
+    display: flex;
+    align-items: center;
+    padding: $spacing-2 $spacing-3;
+    background: white;
+    border: 2px solid $gray-300;
+    border-radius: $radius-lg;
+    color: $gray-700;
+    font-weight: $font-medium;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: $primary-500;
+      color: $primary-600;
+      transform: translateX(-2px);
+    }
+  }
+
+  .pageTitle {
+    font-size: $text-2xl;
+    font-weight: $font-bold;
+    color: $gray-900;
+    margin: 0;
+
+    @include mobile {
+      font-size: $text-xl;
+    }
+  }
+}
+
+.pageContent {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: $spacing-6;
+
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formContainer {
+  background: white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-love;
+  overflow: hidden;
+
+  .formHeader {
+    background: white;
+    padding: $spacing-6;
+    text-align: center;
+    border-bottom: 1px solid $gray-100;
+    margin-bottom: $spacing-4;
+
+    .formTitle {
+      font-size: $text-xl;
+      font-weight: $font-semibold;
+      color: $gray-900;
+      margin-bottom: $spacing-3;
+    }
+
+    .formSubtitle {
+      color: $gray-600;
+      font-style: italic;
+      line-height: 1.5;
+    }
+  }
+
+  .errorMessage {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-3 $spacing-4;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: $radius-lg;
+    color: $error;
+    margin: $spacing-4 $spacing-6;
+
+    .errorIcon {
+      font-size: $text-lg;
+    }
+  }
+}
+
+.tips {
+  background: linear-gradient(135deg, white, $primary-50);
+  border-radius: $radius-xl;
+  padding: $spacing-6;
+  box-shadow: $shadow-md;
+  height: fit-content;
+
+  @include tablet {
+    order: -1;
+  }
+
+  .tipsTitle {
+    font-size: $text-lg;
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-4;
+  }
+
+  .tipsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: $spacing-3 0;
+      border-bottom: 1px solid $gray-100;
+      color: $gray-700;
+      font-size: $text-sm;
+      line-height: 1.6;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &::before {
+        content: '✨ ';
+        color: $primary-500;
+        margin-right: $spacing-1;
+      }
+    }
+  }
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  
+  .loadingSpinner {
+    font-size: 3rem;
+    animation: heartbeat 1.5s ease-in-out infinite;
+    margin-bottom: $spacing-4;
+  }
+  
+  p {
+    font-size: $text-lg;
+    color: $gray-600;
+    font-style: italic;
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}

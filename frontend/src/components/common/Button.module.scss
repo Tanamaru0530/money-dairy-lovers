@@ -1,0 +1,198 @@
+@import '../../styles/variables.scss';
+@import '../../styles/variables-theme.scss';
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-3 $spacing-6;
+  border-radius: $radius-love;
+  font-weight: $font-medium;
+  font-size: $text-base;
+  line-height: $leading-tight;
+  border: none;
+  cursor: pointer;
+  transition: $transition-love;
+  box-shadow: $shadow-md;
+  position: relative;
+  overflow: hidden;
+  font-family: $font-primary;
+  gap: $spacing-2;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: width 0.6s, height 0.6s, top 0.6s, left 0.6s;
+    transform: translate(-50%, -50%);
+  }
+
+  &:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  // Variants
+  &--primary {
+    background: $gradient-love;
+    color: white;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-love-hover;
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+  }
+
+  &--secondary {
+    background: $gradient-couple;
+    color: white;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-couple;
+    }
+  }
+
+  &--outline-love {
+    background: transparent;
+    border: 2px solid $primary-500;
+    color: $primary-500;
+    box-shadow: none;
+
+    &:hover:not(:disabled) {
+      background: rgba($primary-500, 0.1);
+      border-color: $primary-600;
+      transform: translateY(-1px);
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $text-secondary;
+    box-shadow: none;
+
+    &:hover:not(:disabled) {
+      background: $surface-hover;
+      color: $text-primary;
+    }
+  }
+
+  &--love-special {
+    background: $gradient-special;
+    color: white;
+    font-family: $font-love;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: $shadow-special;
+    }
+  }
+
+  // Sizes
+  &--sm {
+    padding: $spacing-2 $spacing-4;
+    font-size: $text-sm;
+    border-radius: $radius-md;
+  }
+
+  &--lg {
+    padding: $spacing-4 $spacing-8;
+    font-size: $text-lg;
+    border-radius: $radius-xl;
+  }
+
+  &--xl {
+    padding: $spacing-5 $spacing-10;
+    font-size: $text-xl;
+    border-radius: $radius-2xl;
+  }
+
+  // States
+  &--full-width {
+    width: 100%;
+  }
+
+  &--loading {
+    color: transparent;
+  }
+
+  // Love animations
+  &--heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+
+  &--love-glow {
+    box-shadow: $shadow-love;
+    animation: love-glow 2s ease-in-out infinite alternate;
+  }
+
+  // Elements
+  &__spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin 1s linear infinite;
+    font-size: 1.2em;
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+// Heart button
+.btn-heart {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: $gradient-love;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  transition: $transition-love;
+  position: relative;
+  box-shadow: $shadow-love;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: $shadow-heart;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &__icon {
+    font-size: 1.2rem;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

@@ -1,0 +1,197 @@
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from sqlalchemy import or_, func
+from uuid import UUID
+
+from app.core.deps import get_db, get_current_active_user
+from app.models.user import User
+from app.models.category import Category as CategoryModel
+from app.schemas.category import Category, CategoryCreate, CategoryUpdate, CategoryWithStats
+from app.models.transaction import Transaction
+
+router = APIRouter()
+
+
+@router.get("/", response_model=List[Category])
+def read_categories(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+    include_stats: bool = False
+):
+    """
+    ユーザーが利用できる全てのカテゴリを取得します。
+    デフォルトカテゴリとユーザーのカスタムカテゴリが含まれます。
+    """
+    categories = db.query(CategoryModel).filter(
+        or_(
+            CategoryModel.is_default == True,
+            CategoryModel.user_id == current_user.id
+        )
+    ).order_by(CategoryModel.sort_order, CategoryModel.name).all()
+    
+    if include_stats:
+        # 統計情報を含む場合
+        result = []
+        for category in categories:
+            stats = db.query(
+                Transaction.category_id,
+                func.count(Transaction.id).label('transaction_count'),
+                func.sum(Transaction.amount).label('total_amount')
+            ).filter(
+                Transaction.category_id == category.id,
+                Transaction.user_id == current_user.id
+            ).group_by(Transaction.category_id).first()
+            
+            category_dict = {
+                "id": category.id,
+                "name": category.name,
+                "icon": category.icon,
+                "color": category.color,
+                "sort_order": category.sort_order,
+                "is_default": category.is_default,
+                "is_love_category": category.is_love_category,
+                "user_id": category.user_id,
+                "created_at": category.created_at,
+                "transaction_count": stats.transaction_count if stats else 0,
+                "total_amount": float(stats.total_amount) if stats and stats.total_amount else 0.0
+            }
+            result.append(CategoryWithStats(**category_dict))
+        return result
+    
+    return categories
+
+
+@router.get("/{category_id}", response_model=Category)
+def read_category(
+    category_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    指定されたカテゴリを取得します。
+    """
+    category = db.query(CategoryModel).filter(
+        CategoryModel.id == category_id,
+        or_(
+            CategoryModel.is_default == True,
+            CategoryModel.user_id == current_user.id
+        )
+    ).first()
+    
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Category not found"
+        )
+    
+    return category
+
+
+@router.post("/", response_model=Category)
+def create_category(
+    category_in: CategoryCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    新しいカスタムカテゴリを作成します。
+    """
+    # 同じ名前のカテゴリが存在しないか確認
+    existing_category = db.query(CategoryModel).filter(
+        CategoryModel.name == category_in.name,
+        or_(
+            CategoryModel.is_default == True,
+            CategoryModel.user_id == current_user.id
+        )
+    ).first()
+    
+    if existing_category:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Category with this name already exists"
+        )
+    
+    category = CategoryModel(
+        **category_in.model_dump(),
+        user_id=current_user.id,
+        is_default=False,
+        is_love_category=False
+    )
+    db.add(category)
+    db.commit()
+    db.refresh(category)
+    
+    return category
+
+
+@router.put("/{category_id}", response_model=Category)
+def update_category(
+    category_id: UUID,
+    category_in: CategoryUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    カスタムカテゴリを更新します。
+    デフォルトカテゴリは更新できません。
+    """
+    category = db.query(CategoryModel).filter(
+        CategoryModel.id == category_id,
+        CategoryModel.user_id == current_user.id,
+        CategoryModel.is_default == False
+    ).first()
+    
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Category not found or cannot be updated"
+        )
+    
+    update_data = category_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(category, field, value)
+    
+    db.commit()
+    db.refresh(category)
+    
+    return category
+
+
+@router.delete("/{category_id}")
+def delete_category(
+    category_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    カスタムカテゴリを削除します。
+    デフォルトカテゴリは削除できません。
+    """
+    category = db.query(CategoryModel).filter(
+        CategoryModel.id == category_id,
+        CategoryModel.user_id == current_user.id,
+        CategoryModel.is_default == False
+    ).first()
+    
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Category not found or cannot be deleted"
+        )
+    
+    # このカテゴリを使用している取引があるか確認
+    transaction_count = db.query(Transaction).filter(
+        Transaction.category_id == category_id
+    ).count()
+    
+    if transaction_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot delete category. It is used in {transaction_count} transactions."
+        )
+    
+    db.delete(category)
+    db.commit()
+    
+    return {"message": "Category deleted successfully"}

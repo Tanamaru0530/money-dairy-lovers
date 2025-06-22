@@ -1,0 +1,407 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.partnershipPage {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, $primary-50, white);
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding-top: 80px;
+  
+  .loadingSpinner {
+    font-size: 3rem;
+    animation: heartbeat 1.5s ease-in-out infinite;
+    margin-bottom: $spacing-4;
+  }
+  
+  p {
+    font-size: $text-lg;
+    color: $gray-600;
+  }
+}
+
+.pageContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-6;
+  padding-top: calc(80px + $spacing-6);
+  
+  @include mobile {
+    padding: $spacing-4;
+    padding-top: calc(70px + $spacing-4);
+  }
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: $spacing-8;
+  
+  .pageTitle {
+    font-size: $text-3xl;
+    font-weight: $font-bold;
+    background: $gradient-couple;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: $spacing-2;
+    
+    @include mobile {
+      font-size: $text-2xl;
+    }
+  }
+  
+  .pageSubtitle {
+    font-size: $text-lg;
+    color: $gray-600;
+    font-style: italic;
+  }
+}
+
+.errorMessage,
+.successMessage {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-4;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-4;
+  font-weight: $font-medium;
+  
+  .errorIcon,
+  .successIcon {
+    font-size: $text-lg;
+  }
+}
+
+.errorMessage {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: $error;
+}
+
+.successMessage {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: $success;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: $spacing-6;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: $spacing-4;
+  }
+}
+
+// カード共通スタイル
+.partnerCard,
+.relationshipCard,
+.inviteCard,
+.joinCard,
+.infoCard,
+.dangerZone {
+  background: white;
+  border-radius: $radius-xl;
+  padding: $spacing-6;
+  box-shadow: $shadow-md;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+  
+  .sectionTitle {
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-4;
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    
+    .icon {
+      font-size: $text-2xl;
+    }
+  }
+  
+  .description {
+    color: $gray-600;
+    margin-bottom: $spacing-4;
+    line-height: $leading-relaxed;
+  }
+}
+
+// パートナー情報カード
+.partnerCard {
+  background: linear-gradient(135deg, white, $primary-50);
+  border: 1px solid $primary-200;
+  
+  .partnerInfo {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+    
+    .partnerAvatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid $primary-300;
+      flex-shrink: 0;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .avatarPlaceholder {
+        width: 100%;
+        height: 100%;
+        background: $primary-100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: $primary-500;
+      }
+    }
+    
+    .partnerDetails {
+      flex: 1;
+      
+      .partnerName {
+        font-size: $text-xl;
+        font-weight: $font-semibold;
+        color: $gray-900;
+        margin-bottom: $spacing-1;
+      }
+      
+      .partnerEmail {
+        font-size: $text-sm;
+        color: $gray-600;
+        margin-bottom: $spacing-1;
+      }
+      
+      .partnershipDate {
+        font-size: $text-sm;
+        color: $primary-600;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+// 関係性カード
+.relationshipCard {
+  background: linear-gradient(135deg, white, $secondary-50);
+  border: 1px solid $secondary-200;
+  
+  .formGroup {
+    margin-bottom: $spacing-4;
+    
+    label {
+      display: block;
+      font-size: $text-sm;
+      font-weight: $font-medium;
+      color: $gray-700;
+      margin-bottom: $spacing-2;
+    }
+    
+    .input,
+    .select {
+      width: 100%;
+      padding: $spacing-3;
+      border: 2px solid $gray-200;
+      border-radius: $radius-lg;
+      font-size: $text-base;
+      transition: all 0.3s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary-500;
+        box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+      }
+    }
+  }
+}
+
+// 招待カード
+.inviteCard {
+  background: linear-gradient(135deg, white, #fef3c7);
+  border: 1px solid #fcd34d;
+  
+  .inviteCodeDisplay {
+    margin-top: $spacing-4;
+    
+    .codeBox {
+      display: flex;
+      align-items: center;
+      gap: $spacing-2;
+      padding: $spacing-4;
+      background: white;
+      border: 2px dashed $primary-500;
+      border-radius: $radius-lg;
+      margin-bottom: $spacing-2;
+      
+      .code {
+        flex: 1;
+        font-family: $font-mono;
+        font-size: $text-2xl;
+        font-weight: $font-bold;
+        color: $primary-600;
+        text-align: center;
+        letter-spacing: 0.2em;
+      }
+      
+      .copyButton {
+        @include button-base;
+        padding: $spacing-2 $spacing-3;
+        background: $primary-100;
+        border: 1px solid $primary-300;
+        border-radius: $radius-md;
+        font-size: $text-lg;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background: $primary-200;
+          transform: scale(1.1);
+        }
+      }
+    }
+    
+    .codeNote {
+      font-size: $text-sm;
+      color: $gray-600;
+      text-align: center;
+      font-style: italic;
+    }
+  }
+}
+
+// 参加カード
+.joinCard {
+  .joinForm {
+    display: flex;
+    gap: $spacing-3;
+    
+    @include mobile {
+      flex-direction: column;
+    }
+    
+    .input {
+      flex: 1;
+      padding: $spacing-3 $spacing-4;
+      border: 2px solid $gray-200;
+      border-radius: $radius-lg;
+      font-size: $text-lg;
+      font-family: $font-mono;
+      font-weight: $font-semibold;
+      text-align: center;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary-500;
+        box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+      }
+      
+      &::placeholder {
+        color: $gray-400;
+        font-weight: $font-normal;
+        letter-spacing: normal;
+      }
+    }
+  }
+}
+
+// 情報カード
+.infoCard {
+  background: linear-gradient(135deg, white, $secondary-50);
+  
+  .featureList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    li {
+      padding: $spacing-3 0;
+      border-bottom: 1px solid $gray-100;
+      font-size: $text-base;
+      color: $gray-700;
+      line-height: $leading-relaxed;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+// 危険ゾーン
+.dangerZone {
+  background: linear-gradient(135deg, white, #fef2f2);
+  border: 1px solid #fecaca;
+  
+  .warningText {
+    color: $gray-700;
+    margin-bottom: $spacing-4;
+    line-height: $leading-relaxed;
+  }
+}
+
+// ボタンスタイル
+.button {
+  @include button-base;
+  padding: $spacing-3 $spacing-6;
+  border-radius: $radius-love;
+  font-weight: $font-medium;
+  font-size: $text-base;
+  transition: all 0.3s ease;
+  width: 100%;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  &.buttonPrimary {
+    background: $gradient-love;
+    color: white;
+    box-shadow: $shadow-md;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-love-hover;
+    }
+  }
+  
+  &.buttonDanger {
+    background: $error;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: darken($error, 10%);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}

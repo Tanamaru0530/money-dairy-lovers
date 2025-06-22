@@ -1,0 +1,134 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.transactionList {
+  width: 100%;
+}
+
+.dateGroup {
+  margin-bottom: $spacing-6;
+}
+
+.dateHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-3;
+  padding: $spacing-2 0;
+  border-bottom: 2px solid $primary-100;
+
+  .date {
+    font-size: $text-lg;
+    font-weight: $font-semibold;
+    color: $gray-900;
+  }
+
+  .dayTotal {
+    font-family: $font-mono;
+    font-weight: $font-bold;
+    font-size: $text-base;
+
+    .positive {
+      color: $success;
+    }
+
+    .negative {
+      color: $error;
+    }
+  }
+}
+
+.transactions {
+  // TransactionCard styles are in TransactionCard.module.scss
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $spacing-8;
+
+  .loadingSpinner {
+    text-align: center;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid $primary-100;
+      border-top-color: $primary-500;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto $spacing-3;
+    }
+
+    p {
+      color: $gray-600;
+      font-size: $text-sm;
+    }
+  }
+}
+
+.errorContainer {
+  text-align: center;
+  padding: $spacing-8;
+
+  .errorMessage {
+    color: $error;
+    font-size: $text-base;
+    margin-bottom: $spacing-4;
+  }
+
+  .retryButton {
+    @include button-base;
+    background: $primary-500;
+    color: white;
+    padding: $spacing-2 $spacing-4;
+    border-radius: $radius-lg;
+    font-weight: $font-medium;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $primary-600;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.emptyContainer {
+  text-align: center;
+  padding: $spacing-12 $spacing-4;
+
+  .emptyIcon {
+    font-size: 4rem;
+    margin-bottom: $spacing-4;
+  }
+
+  .emptyTitle {
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-2;
+  }
+
+  .emptyDescription {
+    color: $gray-600;
+    font-size: $text-base;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+.endMessage {
+  text-align: center;
+  padding: $spacing-6;
+  color: $gray-500;
+  font-size: $text-sm;
+  border-top: 1px solid $gray-200;
+  margin-top: $spacing-4;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

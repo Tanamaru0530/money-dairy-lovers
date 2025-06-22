@@ -1,0 +1,467 @@
+@import '../../styles/variables.scss';
+@import '../../styles/variables-theme.scss';
+@import '../../styles/mixins.scss';
+
+// メール未確認警告バナー
+.emailWarningBanner {
+  background: linear-gradient(135deg, #fef3c7, #fbbf24);
+  color: #92400e;
+  padding: $spacing-2 $spacing-4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  .warningIcon {
+    font-size: $text-base;
+  }
+  
+  .verifyLink {
+    color: #92400e;
+    text-decoration: underline;
+    font-weight: $font-semibold;
+    
+    &:hover {
+      color: #451a03;
+    }
+  }
+}
+
+.navigation {
+  background: $surface;
+  box-shadow: $shadow-default;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  gap: 1rem;
+  
+  @media (min-width: 1200px) {
+    padding: 0 2rem;
+  }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-decoration: none;
+  color: $text-primary;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  .icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .text {
+    background: $gradient-love;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+    
+    @media (min-width: 1100px) {
+      display: none;
+    }
+  }
+  
+  .textFull {
+    background: linear-gradient(135deg, $primary-500, $secondary-500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: none;
+    
+    @media (min-width: 1100px) {
+      display: inline-block;
+    }
+  }
+}
+
+.navLinks {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+  margin: 0 2rem;
+  
+  @include mobile {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: $surface;
+    flex-direction: column;
+    padding: $spacing-4;
+    gap: $spacing-2;
+    box-shadow: $shadow-md;
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    
+    &.mobileOpen {
+      display: flex;
+    }
+  }
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-decoration: none;
+  color: $gray-600;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background: $primary-50;
+    color: $primary-600;
+    transform: translateY(-2px);
+  }
+
+  &.active {
+    background: $gradient-love;
+    color: white;
+    box-shadow: $shadow-love;
+    
+    &:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+    
+    .linkIcon {
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+  }
+
+  .linkIcon {
+    font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+  
+  // 通知バッジ
+  .badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: $error;
+    color: white;
+    font-size: $text-xs;
+    font-weight: $font-bold;
+    padding: 2px 6px;
+    border-radius: $radius-full;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s ease-in-out infinite;
+    
+    &.badgeWarning {
+      background: $warning;
+    }
+    
+    &.badgeLove {
+      background: $gradient-love;
+    }
+  }
+  
+  @include mobile {
+    width: 100%;
+    padding: $spacing-3 $spacing-4;
+    font-size: $text-base;
+    
+    &.active {
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 60%;
+        background: $gradient-love;
+        border-radius: 0 $radius-full $radius-full 0;
+      }
+    }
+  }
+}
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  background: $gray-50;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+}
+
+.userName {
+  color: $gray-700;
+  font-weight: 500;
+}
+
+.userIcon {
+  font-size: 1rem;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid $primary-200;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: $primary-500;
+    transform: scale(1.1);
+  }
+}
+
+.userAvatarMobile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid $primary-200;
+}
+
+.logoutButton {
+  padding: 0.4rem 1rem;
+  background: transparent;
+  border: 2px solid $primary-500;
+  color: $primary-500;
+  border-radius: 2rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: $primary-500;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($primary-500, 0.3);
+  }
+  
+  @include mobile {
+    display: none;
+  }
+}
+
+// Mobile menu button
+.mobileMenuButton {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: $spacing-2;
+  color: $gray-700;
+  
+  @include mobile {
+    display: block;
+  }
+  
+  .menuIcon {
+    display: block;
+    transition: transform 0.3s ease;
+  }
+}
+
+// Mobile overlay
+.mobileOverlay {
+  display: none;
+  
+  @include mobile {
+    display: block;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+  }
+}
+
+// Mobile user menu
+.mobileUserMenu {
+  display: none;
+  
+  @include mobile {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+    width: 100%;
+    padding-top: $spacing-4;
+    margin-top: $spacing-4;
+    border-top: 1px solid $gray-200;
+  }
+}
+
+.userInfoMobile {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-4;
+  background: $gray-50;
+  border-radius: $radius-lg;
+}
+
+.logoutButtonMobile {
+  padding: $spacing-3 $spacing-4;
+  background: $gradient-love;
+  color: white;
+  border: none;
+  border-radius: $radius-lg;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-love;
+  }
+}
+
+// Mobile responsive
+@include mobile {
+  .container {
+    padding: 0 $spacing-4;
+  }
+
+  .logo .text {
+    @include mobile-xs {
+      display: none;
+    }
+  }
+
+  .userInfo {
+    display: none;
+  }
+}
+
+// パートナー情報
+.partnerInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-3;
+  background: linear-gradient(135deg, $primary-50, $secondary-50);
+  border-radius: $radius-full;
+  margin-right: $spacing-2;
+  
+  .heartIcon {
+    font-size: $text-base;
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+  
+  .partnerName {
+    font-size: $text-sm;
+    font-weight: $font-medium;
+    color: $primary-700;
+  }
+}
+
+.partnerInfoMobile {
+  @extend .partnerInfo;
+  margin: 0;
+  border-radius: $radius-lg;
+}
+
+// 通知バッジ（総数）
+.notificationBadge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-2;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  .notificationIcon {
+    font-size: $text-lg;
+  }
+  
+  .notificationCount {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: $error;
+    color: white;
+    font-size: $text-xs;
+    font-weight: $font-bold;
+    padding: 2px 6px;
+    border-radius: $radius-full;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Animations
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

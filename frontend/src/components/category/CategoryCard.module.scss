@@ -1,0 +1,125 @@
+@import '@/styles/variables.scss';
+@import '@/styles/variables-theme.scss';
+
+.categoryCard {
+  background: $surface;
+  border-radius: $radius-xl;
+  padding: $spacing-4;
+  box-shadow: $shadow-md;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+  
+  &.loveCard {
+    background: linear-gradient(135deg, $surface, $primary-50);
+    border: 2px solid $primary-200;
+    
+    &:hover {
+      box-shadow: $shadow-love;
+    }
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin-bottom: $spacing-4;
+}
+
+.categoryIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconText {
+  font-size: 1.5rem;
+}
+
+.categoryName {
+  flex: 1;
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  color: $gray-900;
+  margin: 0;
+}
+
+.loveBadge {
+  padding: $spacing-1 $spacing-2;
+  background: $primary-100;
+  color: $primary-700;
+  border-radius: $radius-full;
+  font-size: $text-xs;
+  font-weight: $font-medium;
+}
+
+.cardBody {
+  margin-bottom: $spacing-3;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-3;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.statLabel {
+  font-size: $text-sm;
+  color: $gray-600;
+}
+
+.statValue {
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  color: $gray-900;
+  font-family: $font-mono;
+}
+
+.emptyState {
+  text-align: center;
+  padding: $spacing-4 0;
+}
+
+.emptyMessage {
+  font-size: $text-sm;
+  color: $gray-500;
+  font-style: italic;
+}
+
+.cardActions {
+  display: flex;
+  gap: $spacing-2;
+  padding-top: $spacing-3;
+  border-top: 1px solid $gray-200;
+}
+
+.deleteButton {
+  color: $error;
+  
+  &:hover {
+    background: $gray-100;
+    color: $error;
+    filter: brightness(0.9);
+  }
+}
+
+// Responsive
+@media (max-width: $breakpoint-sm) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}

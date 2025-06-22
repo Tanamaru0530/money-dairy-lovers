@@ -1,0 +1,98 @@
+@import '@/styles/variables';
+
+.imageUpload {
+  width: 100%;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.uploadArea {
+  border: 2px dashed $gray-300;
+  border-radius: $radius-lg;
+  padding: $spacing-8 $spacing-6;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: $gray-50;
+
+  &:hover {
+    border-color: $primary-500;
+    background: $primary-50;
+  }
+}
+
+.uploadIcon {
+  font-size: 3rem;
+  margin-bottom: $spacing-3;
+}
+
+.uploadText {
+  font-size: $text-base;
+  font-weight: $font-medium;
+  color: $gray-700;
+  margin-bottom: $spacing-2;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.uploadHint {
+  font-size: $text-sm;
+  color: $gray-500;
+}
+
+.uploadInfo {
+  font-size: $text-xs;
+  color: $gray-500;
+}
+
+.previewContainer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.preview {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+}
+
+.removeBtn {
+  position: absolute;
+  top: $spacing-2;
+  right: $spacing-2;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-full;
+  background: rgba($gray-900, 0.7);
+  color: white;
+  border: none;
+  font-size: $text-lg;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba($gray-900, 0.9);
+    transform: scale(1.1);
+  }
+}
+
+.loading {
+  padding: $spacing-8;
+  color: $gray-600;
+  font-size: $text-base;
+}
+
+.error {
+  margin-top: $spacing-2;
+  color: $error;
+  font-size: $text-sm;
+}

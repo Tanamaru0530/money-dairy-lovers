@@ -1,0 +1,189 @@
+// === Breakpoints ===
+$breakpoint-xs: 475px;    // 小さなスマートフォン
+$breakpoint-sm: 640px;    // スマートフォン
+$breakpoint-md: 768px;    // タブレット
+$breakpoint-lg: 1024px;   // ラップトップ
+$breakpoint-xl: 1280px;   // デスクトップ
+$breakpoint-2xl: 1536px;  // 大型デスクトップ
+
+// === Mixins ===
+@mixin mobile-xs {
+  @media (max-width: #{$breakpoint-xs - 1px}) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: #{$breakpoint-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-sm}) and (max-width: #{$breakpoint-lg - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-lg}) {
+    @content;
+  }
+}
+
+@mixin large-desktop {
+  @media (min-width: #{$breakpoint-xl}) {
+    @content;
+  }
+}
+
+// === Focus Management ===
+@mixin focus-visible {
+  &:focus {
+    outline: 3px solid $primary-500;
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+  
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+  
+  &:focus-visible {
+    outline: 3px solid $primary-500;
+    outline-offset: 2px;
+  }
+}
+
+// === Truncate Text ===
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// === Line Clamp ===
+@mixin line-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// === Aspect Ratio ===
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+  
+  &:before {
+    display: block;
+    content: '';
+    padding-top: ($height / $width) * 100%;
+  }
+  
+  > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// === Center Flex ===
+@mixin center-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// === Love Animation ===
+@mixin love-animation($duration: 1.5s) {
+  animation: heartbeat $duration ease-in-out infinite;
+}
+
+// === GPU Acceleration ===
+@mixin gpu-accelerate {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+// === Love Gradient Text ===
+@mixin gradient-text($gradient: $gradient-love) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// === Love Button Reset ===
+@mixin button-reset {
+  appearance: none;
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+// === Button Base ===
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  text-decoration: none;
+  outline: none;
+  user-select: none;
+  appearance: none;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $primary-500;
+    outline-offset: 2px;
+  }
+}
+
+// === Love Card ===
+@mixin love-card($padding: $spacing-6) {
+  background: white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-md;
+  padding: $padding;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+// === Button Primary ===
+@mixin button-primary {
+  @include button-base;
+  background: $gradient-love;
+  color: white;
+  border-radius: $radius-love;
+  font-weight: $font-medium;
+  box-shadow: $shadow-md;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: $shadow-love-hover;
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}

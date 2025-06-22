@@ -1,0 +1,298 @@
+// === Light Mode Base Colors ===
+:root {
+  // Gray scale
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  // Semantic colors
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #06b6d4;
+
+  // Background colors
+  --color-background: #ffffff;
+  --color-background-secondary: #f9fafb;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f3f4f6;
+  
+  // Text colors
+  --color-text-primary: #111827;
+  --color-text-secondary: #4b5563;
+  --color-text-tertiary: #6b7280;
+  --color-text-inverse: #ffffff;
+  
+  // Border colors
+  --color-border: #e5e7eb;
+  --color-border-hover: #d1d5db;
+  
+  // Shadow colors
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color-subtle: rgba(0, 0, 0, 0.05);
+  
+  // Default theme colors (pink)
+  --color-primary-50: #fdf2f8;
+  --color-primary-100: #fce7f3;
+  --color-primary-200: #fbcfe8;
+  --color-primary-300: #f9a8d4;
+  --color-primary-400: #f472b6;
+  --color-primary-500: #ec4899;
+  --color-primary-600: #db2777;
+  --color-primary-700: #be185d;
+  --color-primary-800: #9d174d;
+  --color-primary-900: #831843;
+
+  --color-secondary-50: #eff6ff;
+  --color-secondary-100: #dbeafe;
+  --color-secondary-200: #bfdbfe;
+  --color-secondary-300: #93c5fd;
+  --color-secondary-400: #60a5fa;
+  --color-secondary-500: #3b82f6;
+  --color-secondary-600: #2563eb;
+  --color-secondary-700: #1d4ed8;
+  --color-secondary-800: #1e40af;
+  --color-secondary-900: #1e3a8a;
+
+  --color-accent: #ff6b9d;
+  --gradient-primary: linear-gradient(135deg, #ec4899, #db2777);
+  --gradient-secondary: linear-gradient(135deg, #ec4899, #3b82f6);
+  
+  // Page backgrounds
+  --gradient-page: linear-gradient(135deg, #fdf2f8, #fce7f3);
+  --gradient-auth: linear-gradient(135deg, #fce7f3, #fbcfe8);
+}
+
+// === Dark Mode Base Colors ===
+.dark {
+  // Gray scale (inverted)
+  --color-gray-50: #111827;
+  --color-gray-100: #1f2937;
+  --color-gray-200: #374151;
+  --color-gray-300: #4b5563;
+  --color-gray-400: #6b7280;
+  --color-gray-500: #9ca3af;
+  --color-gray-600: #d1d5db;
+  --color-gray-700: #e5e7eb;
+  --color-gray-800: #f3f4f6;
+  --color-gray-900: #f9fafb;
+
+  // Semantic colors (adjusted for dark mode)
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --color-info: #38bdf8;
+
+  // Background colors
+  --color-background: #0f172a;
+  --color-background-secondary: #1e293b;
+  --color-surface: #1e293b;
+  --color-surface-hover: #334155;
+  
+  // Text colors
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #e5e7eb;
+  --color-text-tertiary: #d1d5db;
+  --color-text-inverse: #111827;
+  
+  // Border colors
+  --color-border: #334155;
+  --color-border-hover: #475569;
+  
+  // Shadow colors
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-color-subtle: rgba(0, 0, 0, 0.2);
+  
+  // Dark mode page backgrounds
+  --gradient-page: linear-gradient(135deg, #0f172a, #1e293b);
+  --gradient-auth: linear-gradient(135deg, #1e293b, #334155);
+}
+
+// === Theme: Default (Love Pink) ===
+.theme-default {
+  --color-primary-50: #fdf2f8;
+  --color-primary-100: #fce7f3;
+  --color-primary-200: #fbcfe8;
+  --color-primary-300: #f9a8d4;
+  --color-primary-400: #f472b6;
+  --color-primary-500: #ec4899;
+  --color-primary-600: #db2777;
+  --color-primary-700: #be185d;
+  --color-primary-800: #9d174d;
+  --color-primary-900: #831843;
+
+  --color-secondary-50: #eff6ff;
+  --color-secondary-100: #dbeafe;
+  --color-secondary-200: #bfdbfe;
+  --color-secondary-300: #93c5fd;
+  --color-secondary-400: #60a5fa;
+  --color-secondary-500: #3b82f6;
+  --color-secondary-600: #2563eb;
+  --color-secondary-700: #1d4ed8;
+  --color-secondary-800: #1e40af;
+  --color-secondary-900: #1e3a8a;
+
+  --color-accent: #ff6b9d;
+  --gradient-primary: linear-gradient(135deg, #ec4899, #db2777);
+  --gradient-secondary: linear-gradient(135deg, #ec4899, #3b82f6);
+  
+  // Light mode
+  --gradient-page: linear-gradient(135deg, #fdf2f8, #fce7f3);
+  --gradient-auth: linear-gradient(135deg, #fce7f3, #fbcfe8);
+  --color-background: #fef6f9;
+  --color-background-secondary: #fef0f5;
+  --color-surface: #ffffff;
+}
+
+// === Theme: Pink ===
+.theme-pink {
+  --color-primary-50: #fdf2f8;
+  --color-primary-100: #fce7f3;
+  --color-primary-200: #fbcfe8;
+  --color-primary-300: #f9a8d4;
+  --color-primary-400: #f472b6;
+  --color-primary-500: #ec4899;
+  --color-primary-600: #db2777;
+  --color-primary-700: #be185d;
+  --color-primary-800: #9d174d;
+  --color-primary-900: #831843;
+
+  --color-secondary-50: #fce7f3;
+  --color-secondary-100: #fbcfe8;
+  --color-secondary-200: #f9a8d4;
+  --color-secondary-300: #f472b6;
+  --color-secondary-400: #ec4899;
+  --color-secondary-500: #db2777;
+  --color-secondary-600: #be185d;
+  --color-secondary-700: #9d174d;
+  --color-secondary-800: #831843;
+  --color-secondary-900: #701a3d;
+
+  --color-accent: #ff6b9d;
+  --gradient-primary: linear-gradient(135deg, #fce7f3, #fbcfe8);
+  --gradient-secondary: linear-gradient(135deg, #ec4899, #f472b6);
+  
+  // Light mode pink
+  --gradient-page: linear-gradient(135deg, #fff0f5, #ffe4f0);
+  --gradient-auth: linear-gradient(135deg, #ffe4f0, #ffd6e8);
+  --color-background: #fff5f8;
+  --color-background-secondary: #ffeff5;
+  --color-surface: #ffffff;
+}
+
+// === Theme: Blue ===
+.theme-blue {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  --color-secondary-50: #f0f9ff;
+  --color-secondary-100: #e0f2fe;
+  --color-secondary-200: #bae6fd;
+  --color-secondary-300: #7dd3fc;
+  --color-secondary-400: #38bdf8;
+  --color-secondary-500: #0ea5e9;
+  --color-secondary-600: #0284c7;
+  --color-secondary-700: #0369a1;
+  --color-secondary-800: #075985;
+  --color-secondary-900: #0c4a6e;
+
+  --color-accent: #38bdf8;
+  --gradient-primary: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  --gradient-secondary: linear-gradient(135deg, #3b82f6, #0ea5e9);
+  
+  // Light mode blue
+  --gradient-page: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  --gradient-auth: linear-gradient(135deg, #e0f2fe, #bae6fd);
+  --color-background: #f5faff;
+  --color-background-secondary: #ebf8ff;
+  --color-surface: #ffffff;
+}
+
+// === Dark mode adjustments for themes ===
+.dark.theme-default {
+  --color-primary-50: #831843;
+  --color-primary-100: #9d174d;
+  --color-primary-200: #be185d;
+  --color-primary-300: #db2777;
+  --color-primary-400: #ec4899;
+  --color-primary-500: #f472b6;
+  --color-primary-600: #f9a8d4;
+  --color-primary-700: #fbcfe8;
+  --color-primary-800: #fce7f3;
+  --color-primary-900: #fdf2f8;
+  
+  // Dark mode default backgrounds
+  --gradient-page: linear-gradient(135deg, #1a0a0f, #2d1b1f);
+  --gradient-auth: linear-gradient(135deg, #2d1b1f, #3f282e);
+  --color-background: #0f0509;
+  --color-background-secondary: #1a0a0f;
+}
+
+.dark.theme-pink {
+  --color-primary-50: #831843;
+  --color-primary-100: #9d174d;
+  --color-primary-200: #be185d;
+  --color-primary-300: #db2777;
+  --color-primary-400: #ec4899;
+  --color-primary-500: #f472b6;
+  --color-primary-600: #f9a8d4;
+  --color-primary-700: #fbcfe8;
+  --color-primary-800: #fce7f3;
+  --color-primary-900: #fdf2f8;
+  
+  // Dark mode pink backgrounds
+  --gradient-page: linear-gradient(135deg, #2d1420, #3f1d2b);
+  --gradient-auth: linear-gradient(135deg, #3f1d2b, #512637);
+  --color-background: #1a0a11;
+  --color-background-secondary: #2d1420;
+}
+
+.dark.theme-blue {
+  --color-primary-50: #1e3a8a;
+  --color-primary-100: #1e40af;
+  --color-primary-200: #1d4ed8;
+  --color-primary-300: #2563eb;
+  --color-primary-400: #3b82f6;
+  --color-primary-500: #60a5fa;
+  --color-primary-600: #93c5fd;
+  --color-primary-700: #bfdbfe;
+  --color-primary-800: #dbeafe;
+  --color-primary-900: #eff6ff;
+  
+  // Dark mode blue backgrounds
+  --gradient-page: linear-gradient(135deg, #0f172a, #1e293b);
+  --gradient-auth: linear-gradient(135deg, #1e293b, #334155);
+  --color-background: #0c1323;
+  --color-background-secondary: #111b33;
+}
+
+// === Common shadows and effects ===
+:root {
+  --shadow-sm: 0 1px 2px 0 var(--shadow-color-subtle);
+  --shadow-default: 0 1px 3px 0 var(--shadow-color), 0 1px 2px 0 var(--shadow-color-subtle);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color-subtle);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color-subtle);
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color-subtle);
+  --shadow-2xl: 0 25px 50px -12px var(--shadow-color);
+  --shadow-love: 0 4px 14px 0 rgba(var(--color-primary-500-rgb), 0.39);
+}
+
+// === Utility classes ===
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

@@ -1,0 +1,281 @@
+@import '@/styles/variables.scss';
+@import '@/styles/mixins.scss';
+
+.notificationsPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $primary-50, $secondary-50);
+
+  .pageContent {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: $spacing-6;
+
+    @include mobile {
+      padding: $spacing-4;
+    }
+  }
+
+  .pageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-8;
+
+    .titleSection {
+      display: flex;
+      align-items: center;
+      gap: $spacing-2;
+
+      .pageTitle {
+        font-size: $text-3xl;
+        font-weight: $font-bold;
+        color: $gray-900;
+        display: flex;
+        align-items: center;
+        gap: $spacing-2;
+        margin: 0;
+
+        .icon {
+          font-size: $text-4xl;
+        }
+      }
+
+      .unreadBadge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 24px;
+        height: 24px;
+        padding: 0 $spacing-2;
+        background: $error;
+        color: white;
+        border-radius: $radius-full;
+        font-size: $text-sm;
+        font-weight: $font-bold;
+      }
+    }
+
+    .markAllReadButton {
+      padding: $spacing-2 $spacing-4;
+      background: white;
+      border: 2px solid $primary-300;
+      border-radius: $radius-lg;
+      color: $primary-600;
+      font-weight: $font-medium;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover:not(:disabled) {
+        background: $primary-50;
+        border-color: $primary-500;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .filterSection {
+    display: flex;
+    gap: $spacing-2;
+    margin-bottom: $spacing-6;
+
+    .filterButton {
+      padding: $spacing-2 $spacing-4;
+      background: white;
+      border: 2px solid $gray-300;
+      border-radius: $radius-lg;
+      color: $gray-700;
+      font-weight: $font-medium;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: $gray-50;
+        border-color: $gray-400;
+      }
+
+      &.active {
+        background: $primary-500;
+        border-color: $primary-500;
+        color: white;
+      }
+    }
+  }
+
+  .loadingState,
+  .emptyState {
+    text-align: center;
+    padding: $spacing-12;
+
+    .loadingSpinner,
+    .emptyIcon {
+      font-size: 4rem;
+      margin-bottom: $spacing-4;
+      opacity: 0.5;
+    }
+
+    .loadingSpinner {
+      animation: pulse 2s infinite;
+    }
+
+    h3 {
+      font-size: $text-xl;
+      font-weight: $font-semibold;
+      color: $gray-700;
+      margin-bottom: $spacing-2;
+    }
+
+    p {
+      color: $gray-500;
+    }
+  }
+
+  .notificationsList {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  .notificationItem {
+    display: flex;
+    gap: $spacing-4;
+    padding: $spacing-4;
+    background: white;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-sm;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-md;
+    }
+
+    &.notificationRead {
+      opacity: 0.7;
+      background: $gray-50;
+    }
+
+    &.notificationNormal {
+      border-left: 4px solid $primary-500;
+    }
+
+    &.notificationHigh {
+      border-left: 4px solid $warning;
+      background: linear-gradient(to right, rgba($warning, 0.05), white);
+    }
+
+    &.notificationUrgent {
+      border-left: 4px solid $error;
+      background: linear-gradient(to right, rgba($error, 0.05), white);
+      animation: pulse 2s infinite;
+    }
+
+    .notificationIcon {
+      font-size: $text-2xl;
+      min-width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notificationContent {
+      flex: 1;
+      min-width: 0;
+
+      .notificationTitle {
+        font-size: $text-lg;
+        font-weight: $font-semibold;
+        color: $gray-900;
+        margin-bottom: $spacing-1;
+        display: flex;
+        align-items: center;
+        gap: $spacing-2;
+
+        .unreadDot {
+          color: $primary-500;
+          font-size: $text-xs;
+        }
+      }
+
+      .notificationMessage {
+        color: $gray-600;
+        margin-bottom: $spacing-2;
+        line-height: $leading-relaxed;
+      }
+
+      .actionLink {
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-1;
+        color: $primary-600;
+        text-decoration: none;
+        font-weight: $font-medium;
+        font-size: $text-sm;
+        margin-bottom: $spacing-2;
+
+        &:hover {
+          color: $primary-700;
+          text-decoration: underline;
+        }
+      }
+
+      .notificationMeta {
+        display: flex;
+        align-items: center;
+        gap: $spacing-3;
+        font-size: $text-sm;
+        color: $gray-500;
+
+        .notificationTime {
+          display: flex;
+          align-items: center;
+          gap: $spacing-1;
+        }
+      }
+    }
+
+    .deleteButton {
+      position: absolute;
+      top: $spacing-2;
+      right: $spacing-2;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: $gray-400;
+      font-size: $text-xl;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+
+      &:hover {
+        color: $error;
+        transform: scale(1.2);
+      }
+    }
+
+    &:hover .deleteButton {
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}

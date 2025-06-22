@@ -1,0 +1,15 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.pageLayout {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $primary-50, $secondary-50);
+}
+
+.mainContent {
+  padding-top: 80px; // ナビゲーションの高さ + 余白
+  
+  @include mobile {
+    padding-top: 70px; // モバイルでは少し狭く
+  }
+}

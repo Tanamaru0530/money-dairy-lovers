@@ -1,0 +1,640 @@
+@import '../../styles/variables.scss';
+@import '../../styles/variables-theme.scss';
+
+.settingsPage {
+  min-height: 100vh;
+  background: $gradient-page;
+}
+
+.pageContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: 100px;
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+  
+  .pageTitle {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    
+    .icon {
+      font-size: 2.5rem;
+    }
+  }
+  
+  .pageSubtitle {
+    color: $text-secondary;
+    font-size: 1.125rem;
+  }
+}
+
+.settingsContainer {
+  background: $surface;
+  border-radius: 1rem;
+  box-shadow: $shadow-md;
+  overflow: hidden;
+}
+
+.tabMenu {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 2px solid $border-color;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: none;
+  border: none;
+  color: $text-secondary;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  
+  &:hover {
+    color: $text-primary;
+    background: $surface-hover;
+  }
+  
+  &.active {
+    color: $primary-600;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: $primary-600;
+    }
+  }
+  
+  .tabIcon {
+    font-size: 1.25rem;
+  }
+  
+  @media (max-width: 640px) {
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    
+    .tabIcon {
+      font-size: 1rem;
+    }
+  }
+}
+
+.tabContent {
+  padding: 2rem;
+  
+  @media (max-width: 640px) {
+    padding: 1rem;
+  }
+}
+
+// プロフィールセクション
+.profileSection {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $text-primary;
+  margin-bottom: 2rem;
+}
+
+.profileImageSection {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  
+  @media (max-width: 640px) {
+    flex-direction: column;
+  }
+}
+
+.imagePreview {
+  .profileImage,
+  .placeholderImage {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .placeholderImage {
+    background: linear-gradient(135deg, $primary-100, $primary-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .placeholderIcon {
+      font-size: 3rem;
+      color: $primary-600;
+    }
+  }
+}
+
+.imageUpload {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  .fileInput {
+    display: none;
+  }
+  
+  .uploadButton,
+  .saveImageButton {
+    padding: 0.5rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: 0.5rem;
+    background: $surface;
+    color: $text-primary;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    
+    &:hover {
+      background: $surface-hover;
+      border-color: $border-color-hover;
+    }
+  }
+  
+  .saveImageButton {
+    background: $gradient-love;
+    color: white;
+    border: none;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: $shadow-love;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.profileForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $text-primary;
+  }
+  
+  .input {
+    padding: 0.75rem 1rem;
+    border: 2px solid $border-color;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: $surface;
+    color: $text-primary;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-600;
+      box-shadow: 0 0 0 3px rgba($primary-600, 0.1);
+    }
+    
+    &:disabled {
+      background: $gray-100;
+      color: $text-tertiary;
+      cursor: not-allowed;
+    }
+  }
+  
+  .helpText {
+    font-size: 0.75rem;
+    color: $text-secondary;
+  }
+  
+  .error {
+    font-size: 0.75rem;
+    color: $error;
+  }
+}
+
+.submitButton {
+  padding: 0.75rem 1.5rem;
+  background: $gradient-love;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: $shadow-love;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// 通知セクション
+.notificationSection {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.notificationForm {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.notificationGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  .groupTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  
+  &:hover {
+    background: $surface-hover;
+  }
+  
+  .checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.125rem;
+    cursor: pointer;
+    accent-color: $primary-600;
+  }
+  
+  .labelText {
+    font-weight: 500;
+    color: $text-primary;
+  }
+  
+  .labelDescription {
+    display: block;
+    font-size: 0.875rem;
+    color: $text-secondary;
+    margin-top: 0.25rem;
+  }
+}
+
+// テーマセクション
+.themeSection {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.darkModeToggle {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid $border-color;
+}
+
+.subsectionTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $text-primary;
+  margin-bottom: 1rem;
+}
+
+.toggleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: $surface;
+  border-radius: 0.75rem;
+  transition: background 0.3s ease;
+  
+  &:hover {
+    background: $surface-hover;
+  }
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  cursor: pointer;
+}
+
+.toggleText {
+  font-weight: 500;
+  color: $text-primary;
+}
+
+.toggle {
+  position: relative;
+  width: 60px;
+  height: 32px;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $gray-300;
+  transition: all 0.4s ease;
+  border-radius: 34px;
+  
+  &::before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: all 0.4s ease;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.toggleInput:checked + .toggleSlider {
+  background: $gradient-love;
+  
+  &::before {
+    transform: translateX(28px);
+  }
+}
+
+.toggleIcon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  
+  // Sun icon position (left side when unchecked)
+  left: 8px;
+  
+  // When checked, move to moon position
+  .toggleInput:checked ~ .toggleSlider & {
+    left: auto;
+    right: 8px;
+  }
+}
+
+// パートナー設定セクション
+.partnerSection {
+  .partnerInfo {
+    margin-bottom: 3rem;
+    
+    .partnerCard {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, white, rgba($primary-50, 0.5));
+      border: 1px solid $primary-200;
+      border-radius: $radius-xl;
+      box-shadow: $shadow-sm;
+      
+      .partnerAvatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        
+        .avatarPlaceholder {
+          width: 100%;
+          height: 100%;
+          background: $gray-100;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 2.5rem;
+          color: $gray-400;
+        }
+      }
+      
+      .partnerDetails {
+        .partnerName {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: $gray-900;
+          margin-bottom: 0.25rem;
+        }
+        
+        .partnerEmail {
+          font-size: 0.875rem;
+          color: $gray-600;
+        }
+      }
+    }
+  }
+  
+  .relationshipSettings {
+    margin-bottom: 3rem;
+    
+    .select {
+      @extend .input;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M5.293 8.293a1 1 0 0 0 1.414 0l3-3a1 1 0 0 0-1.414-1.414L6 6.172 3.707 3.879a1 1 0 0 0-1.414 1.414l3 3z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+  }
+  
+  .dangerZone {
+    padding: 1.5rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: $radius-lg;
+    
+    .warningText {
+      color: $error;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+    
+    .dangerButton {
+      background: $error;
+      color: white;
+      
+      &:hover {
+        background: #dc2626; // Darker red for hover
+        filter: brightness(0.9);
+      }
+    }
+  }
+}
+
+.themeOptions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.themeOption {
+  .hiddenInput {
+    display: none;
+  }
+}
+
+.themeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 2px solid $border-color;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: $surface;
+  
+  &:hover {
+    border-color: $primary-600;
+    transform: translateY(-2px);
+  }
+  
+  &.selected {
+    border-color: $primary-600;
+    background: linear-gradient(135deg, $primary-100, $primary-200);
+  }
+  
+  .themePreview {
+    width: 80px;
+    height: 80px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .themeIcon {
+      font-size: 2rem;
+    }
+  }
+  
+  .themeName {
+    font-weight: 500;
+    color: $text-primary;
+  }
+}
+
+// セキュリティセクション
+.securitySection {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.securityItem {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid $border-color;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  .itemTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+  }
+  
+  .itemDescription {
+    color: $text-secondary;
+    margin-bottom: 1rem;
+  }
+  
+  .actionButton {
+    padding: 0.5rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: 0.5rem;
+    background: $surface;
+    color: $text-primary;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover:not(:disabled) {
+      background: $surface-hover;
+      border-color: $border-color-hover;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}

@@ -1,0 +1,233 @@
+@import '../../styles/variables.scss';
+@import '../../styles/variables-theme.scss';
+
+.card {
+  background: white;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  transition: $transition-love;
+  position: relative;
+  
+  // Variants
+  &--default {
+    border: 1px solid $gray-200;
+  }
+  
+  &--love {
+    background: linear-gradient(135deg, white, $primary-50);
+    border: 1px solid $primary-200;
+    
+    &:hover {
+      box-shadow: $shadow-love;
+    }
+  }
+  
+  &--couple {
+    background: linear-gradient(135deg, $primary-50, $secondary-50);
+    border: 1px solid $primary-200;
+  }
+  
+  &--special {
+    background: linear-gradient(135deg, white, #fef3c7);
+    border: 2px solid $love-gold;
+    
+    &::before {
+      content: "✨";
+      position: absolute;
+      top: $spacing-2;
+      right: $spacing-2;
+      font-size: $text-lg;
+    }
+  }
+  
+  // Padding variations
+  &--padding-none {
+    padding: 0;
+  }
+  
+  &--padding-small {
+    padding: $spacing-3;
+  }
+  
+  &--padding-medium {
+    padding: $spacing-4;
+  }
+  
+  &--padding-large {
+    padding: $spacing-6;
+  }
+  
+  // Shadow variations
+  &--shadow-none {
+    box-shadow: none;
+  }
+  
+  &--shadow-small {
+    box-shadow: $shadow-sm;
+  }
+  
+  &--shadow-medium {
+    box-shadow: $shadow-md;
+  }
+  
+  &--shadow-large {
+    box-shadow: $shadow-lg;
+  }
+  
+  &--shadow-love {
+    box-shadow: $shadow-love;
+  }
+  
+  // Interactive states
+  &--clickable {
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-lg;
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &:focus {
+      outline: 2px solid $primary-500;
+      outline-offset: 2px;
+    }
+  }
+}
+
+.cardHeader {
+  padding: $spacing-4 $spacing-6;
+  border-bottom: 1px solid $gray-200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-3;
+  
+  &--love {
+    border-bottom-color: $primary-200;
+    background: rgba($primary-100, 0.5);
+  }
+}
+
+.cardHeaderContent {
+  flex: 1;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  color: $gray-900;
+  
+  &--love {
+    color: $primary-600;
+    font-family: $font-love;
+  }
+}
+
+.cardSubtitle {
+  margin: $spacing-1 0 0 0;
+  font-size: $text-sm;
+  color: $gray-600;
+}
+
+.cardHeaderAction {
+  flex-shrink: 0;
+}
+
+.cardContent {
+  padding: $spacing-6;
+  
+  // When card has no padding, content should have padding
+  .card--padding-none & {
+    padding: $spacing-6;
+  }
+  
+  // When following a header
+  .cardHeader + & {
+    padding-top: $spacing-6;
+  }
+}
+
+.cardFooter {
+  padding: $spacing-4 $spacing-6;
+  background: $gray-50;
+  border-top: 1px solid $gray-200;
+  display: flex;
+  gap: $spacing-3;
+  
+  &--left {
+    justify-content: flex-start;
+  }
+  
+  &--center {
+    justify-content: center;
+  }
+  
+  &--right {
+    justify-content: flex-end;
+  }
+  
+  &--between {
+    justify-content: space-between;
+  }
+  
+  // In love variant cards
+  .card--love & {
+    background: rgba($primary-100, 0.3);
+    border-top-color: $primary-200;
+  }
+  
+  // In special cards
+  .card--special & {
+    background: rgba($love-gold, 0.1);
+    border-top-color: rgba($love-gold, 0.3);
+  }
+}
+
+// Transaction card special styling
+.card--transaction {
+  margin-bottom: $spacing-3;
+  
+  &:hover {
+    .transaction-actions {
+      opacity: 1;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: $breakpoint-sm) {
+  .card {
+    &--padding-medium {
+      padding: $spacing-3;
+    }
+    
+    &--padding-large {
+      padding: $spacing-4;
+    }
+  }
+  
+  .cardHeader {
+    padding: $spacing-3 $spacing-4;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .cardContent {
+    padding: $spacing-4;
+  }
+  
+  .cardFooter {
+    padding: $spacing-3 $spacing-4;
+    flex-direction: column;
+    
+    &--between {
+      align-items: stretch;
+      gap: $spacing-2;
+    }
+  }
+}

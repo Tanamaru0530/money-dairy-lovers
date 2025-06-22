@@ -1,0 +1,246 @@
+@import '@/styles/variables';
+@import '@/styles/mixins';
+
+.authContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, $primary-50, $secondary-50);
+  padding: $spacing-4;
+}
+
+.authForm {
+  background: white;
+  border-radius: $radius-2xl;
+  box-shadow: $shadow-love;
+  padding: $spacing-8;
+  width: 100%;
+  max-width: 400px;
+  
+  @include mobile {
+    padding: $spacing-6;
+  }
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  text-align: center;
+  margin-bottom: $spacing-2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  
+  .icon {
+    font-size: $text-3xl;
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+}
+
+.subtitle {
+  font-size: $text-base;
+  color: $gray-600;
+  text-align: center;
+  margin-bottom: $spacing-6;
+  font-style: italic;
+}
+
+.error {
+  background: $error;
+  color: white;
+  padding: $spacing-3 $spacing-4;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-4;
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  font-size: $text-sm;
+  
+  .errorIcon {
+    font-size: $text-lg;
+  }
+}
+
+.formGroup {
+  margin-bottom: $spacing-4;
+  
+  &:last-of-type {
+    margin-bottom: $spacing-6;
+  }
+}
+
+.label {
+  display: block;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gray-700;
+  margin-bottom: $spacing-2;
+  
+  .required {
+    color: $error;
+  }
+}
+
+.input {
+  width: 100%;
+  padding: $spacing-3 $spacing-4;
+  border: 2px solid $gray-200;
+  border-radius: $radius-love;
+  font-size: $text-base;
+  transition: all 0.3s ease;
+  background: white;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+    background: $primary-50;
+  }
+  
+  &::placeholder {
+    color: $gray-400;
+    font-style: italic;
+  }
+  
+  &Error {
+    border-color: $error;
+    background: #fef2f2;
+    
+    &:focus {
+      border-color: $error;
+      box-shadow: 0 0 0 3px rgba($error, 0.1);
+    }
+  }
+}
+
+.fieldError {
+  display: block;
+  font-size: $text-xs;
+  color: $error;
+  margin-top: $spacing-1;
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  
+  &::before {
+    content: "⚠️";
+  }
+}
+
+.helpText {
+  font-size: $text-xs;
+  color: $gray-500;
+  margin-top: $spacing-1;
+  line-height: 1.4;
+}
+
+.submitButton {
+  width: 100%;
+  padding: $spacing-3 $spacing-6;
+  background: $gradient-love;
+  color: white;
+  border: none;
+  border-radius: $radius-love;
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: $shadow-love-hover;
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+  
+  // Ripple effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: width 0.6s, height 0.6s, top 0.6s, left 0.6s;
+    transform: translate(-50%, -50%);
+  }
+  
+  &:active::before {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+.links {
+  text-align: center;
+  margin-top: $spacing-6;
+}
+
+.link {
+  color: $primary-600;
+  text-decoration: none;
+  font-size: $text-sm;
+  transition: color 0.2s ease;
+  display: inline-block;
+  margin: $spacing-2;
+  
+  &:hover {
+    color: $primary-700;
+    text-decoration: underline;
+  }
+  
+  &:focus {
+    outline: 2px solid $primary-500;
+    outline-offset: 2px;
+  }
+}
+
+// Loading styles
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, $primary-50, $secondary-50);
+  
+  .loading-spinner {
+    font-size: $text-5xl;
+    animation: spin 2s linear infinite;
+  }
+  
+  p {
+    margin-top: $spacing-4;
+    color: $gray-600;
+    font-size: $text-lg;
+  }
+}
+
+// Animations
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Shadow hover effect
+$shadow-love-hover: 0 6px 20px 0 rgba($primary-500, 0.5);

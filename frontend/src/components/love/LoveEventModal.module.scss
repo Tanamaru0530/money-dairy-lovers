@@ -1,0 +1,176 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $spacing-4;
+  animation: fadeIn 0.3s ease;
+}
+
+.modalContent {
+  background: white;
+  border-radius: $radius-xl;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: $shadow-2xl;
+  animation: slideUp 0.3s ease;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-6;
+  border-bottom: 1px solid $gray-200;
+  
+  h2 {
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $gray-900;
+  }
+  
+  .closeButton {
+    @include button-base;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: $gray-100;
+    color: $gray-600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: $gray-200;
+      color: $gray-900;
+    }
+  }
+}
+
+.form {
+  padding: $spacing-6;
+}
+
+.formGroup {
+  margin-bottom: $spacing-5;
+  
+  label {
+    display: block;
+    font-size: $text-sm;
+    font-weight: $font-medium;
+    color: $gray-700;
+    margin-bottom: $spacing-2;
+    
+    input[type="checkbox"] {
+      margin-right: $spacing-2;
+    }
+  }
+  
+  input[type="text"],
+  input[type="date"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: $spacing-3;
+    border: 2px solid $gray-200;
+    border-radius: $radius-lg;
+    font-size: $text-base;
+    transition: all 0.3s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-500;
+      box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+    }
+  }
+  
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right $spacing-3 center;
+    padding-right: $spacing-8;
+  }
+  
+  .error {
+    display: block;
+    font-size: $text-xs;
+    color: $error;
+    margin-top: $spacing-1;
+  }
+}
+
+.formActions {
+  display: flex;
+  gap: $spacing-3;
+  justify-content: flex-end;
+  margin-top: $spacing-6;
+  
+  .cancelButton {
+    @include button-base;
+    padding: $spacing-3 $spacing-5;
+    background: $gray-100;
+    color: $gray-700;
+    border-radius: $radius-lg;
+    font-weight: $font-medium;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: $gray-200;
+    }
+  }
+  
+  .submitButton {
+    @include button-base;
+    padding: $spacing-3 $spacing-5;
+    background: $gradient-love;
+    color: white;
+    border-radius: $radius-lg;
+    font-weight: $font-semibold;
+    box-shadow: $shadow-love;
+    transition: all 0.3s ease;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-love-hover;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

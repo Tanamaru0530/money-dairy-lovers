@@ -1,0 +1,154 @@
+@import '../../styles/variables.scss';
+@import '../../styles/variables-theme.scss';
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  margin-bottom: $spacing-4;
+
+  &--full-width {
+    width: 100%;
+  }
+}
+
+.label {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gray-700;
+  margin-bottom: $spacing-1;
+
+  &--required::after {
+    content: " *";
+    color: $error;
+  }
+
+  &--love {
+    color: $primary-600;
+    font-weight: $font-semibold;
+
+    &::before {
+      content: "💕 ";
+      margin-right: $spacing-1;
+    }
+  }
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+
+  &.input-with-icon {
+    .input {
+      padding-left: 3rem;
+    }
+  }
+}
+
+.input {
+  display: block;
+  width: 100%;
+  padding: $spacing-3 $spacing-4;
+  border: 2px solid $gray-200;
+  border-radius: $radius-love;
+  font-size: $text-base;
+  line-height: $leading-normal;
+  background-color: white;
+  transition: $transition-love;
+  font-family: $font-primary;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+    background: $primary-50;
+  }
+
+  &--error {
+    border-color: $error;
+    background: #fef2f2;
+
+    &:focus {
+      border-color: $error;
+      box-shadow: 0 0 0 3px rgba($error, 0.1);
+    }
+  }
+
+  &--success {
+    border-color: $success;
+    background: #f0fdf4;
+  }
+
+  &--love {
+    border-color: $primary-300;
+    background: linear-gradient(135deg, white, $primary-50);
+
+    &:focus {
+      border-color: $primary-500;
+      box-shadow: $shadow-love;
+    }
+  }
+
+  &::placeholder {
+    color: $gray-400;
+    font-style: italic;
+  }
+
+  &:disabled {
+    background-color: $gray-100;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.input-icon {
+  position: absolute;
+  left: $spacing-3;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $gray-400;
+  font-size: $text-lg;
+  pointer-events: none;
+  z-index: 1;
+
+  &--love {
+    color: $primary-500;
+  }
+}
+
+.help-text {
+  font-size: $text-xs;
+  color: $gray-500;
+
+  &--love {
+    color: $primary-600;
+
+    &::before {
+      content: "💡 ";
+    }
+  }
+}
+
+.error-message {
+  font-size: $text-xs;
+  color: $error;
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+
+  &::before {
+    content: "⚠️";
+  }
+}
+
+.success-message {
+  font-size: $text-xs;
+  color: $success;
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+
+  &::before {
+    content: "✅";
+  }
+}

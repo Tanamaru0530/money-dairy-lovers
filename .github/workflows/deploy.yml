@@ -1,0 +1,138 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-northeast-1
+  ECR_REPOSITORY_BACKEND: money-dairy-lovers-backend
+  ECR_REPOSITORY_FRONTEND: money-dairy-lovers-frontend
+  ECS_SERVICE_BACKEND: money-dairy-lovers-backend-service
+  ECS_SERVICE_FRONTEND: money-dairy-lovers-frontend-service
+  ECS_CLUSTER: money-dairy-lovers-cluster
+  ECS_TASK_DEFINITION_BACKEND: money-dairy-lovers-backend-task
+  ECS_TASK_DEFINITION_FRONTEND: money-dairy-lovers-frontend-task
+
+jobs:
+  deploy:
+    name: Deploy to AWS ECS
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      
+      - name: Build, tag, and push Backend image to Amazon ECR
+        id: build-backend-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd backend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      
+      - name: Build, tag, and push Frontend image to Amazon ECR
+        id: build-frontend-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd frontend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG \
+            --build-arg VITE_API_URL=${{ secrets.PRODUCTION_API_URL }} .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      
+      - name: Download Backend task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${{ env.ECS_TASK_DEFINITION_BACKEND }} \
+            --query taskDefinition > backend-task-definition.json
+      
+      - name: Fill in the new Backend image ID in the Amazon ECS task definition
+        id: backend-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: backend-task-definition.json
+          container-name: money-dairy-lovers-backend
+          image: ${{ steps.build-backend-image.outputs.image }}
+      
+      - name: Deploy Backend Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.backend-task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE_BACKEND }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+      
+      - name: Download Frontend task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${{ env.ECS_TASK_DEFINITION_FRONTEND }} \
+            --query taskDefinition > frontend-task-definition.json
+      
+      - name: Fill in the new Frontend image ID in the Amazon ECS task definition
+        id: frontend-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: frontend-task-definition.json
+          container-name: money-dairy-lovers-frontend
+          image: ${{ steps.build-frontend-image.outputs.image }}
+      
+      - name: Deploy Frontend Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.frontend-task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE_FRONTEND }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+      
+      - name: Run database migrations
+        run: |
+          aws ecs run-task \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --task-definition ${{ env.ECS_TASK_DEFINITION_BACKEND }} \
+            --overrides '{
+              "containerOverrides": [{
+                "name": "money-dairy-lovers-backend",
+                "command": ["alembic", "upgrade", "head"]
+              }]
+            }' \
+            --network-configuration '{
+              "awsvpcConfiguration": {
+                "subnets": ["${{ secrets.PRIVATE_SUBNET_1 }}", "${{ secrets.PRIVATE_SUBNET_2 }}"],
+                "securityGroups": ["${{ secrets.BACKEND_SECURITY_GROUP }}"]
+              }
+            }'
+      
+      - name: Slack Notification on Success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: 'Deployment to production succeeded! 💕'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      
+      - name: Slack Notification on Failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          text: 'Deployment to production failed! ❌'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}

@@ -1,0 +1,468 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.budgetsPage {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, $primary-50, white);
+  padding-top: 80px;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  
+  .loadingSpinner {
+    font-size: 3rem;
+    animation: spin 1.5s ease-in-out infinite;
+    margin-bottom: $spacing-4;
+  }
+  
+  p {
+    font-size: $text-lg;
+    color: $gray-600;
+  }
+}
+
+.pageContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-6;
+  
+  @include mobile {
+    padding: $spacing-4;
+  }
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: $spacing-8;
+  
+  .pageTitle {
+    font-size: $text-3xl;
+    font-weight: $font-bold;
+    background: $gradient-couple;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: $spacing-2;
+    
+    @include mobile {
+      font-size: $text-2xl;
+    }
+  }
+  
+  .pageSubtitle {
+    font-size: $text-lg;
+    color: $gray-600;
+    font-style: italic;
+  }
+}
+
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-4;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: $radius-lg;
+  color: $error;
+  margin-bottom: $spacing-4;
+  font-weight: $font-medium;
+  
+  .errorIcon {
+    font-size: $text-lg;
+  }
+}
+
+// サマリーセクション
+.summarySection {
+  margin-bottom: $spacing-8;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-4;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summaryCard {
+  background: white;
+  border-radius: $radius-xl;
+  padding: $spacing-6;
+  box-shadow: $shadow-md;
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+  
+  &.totalBudget {
+    background: linear-gradient(135deg, white, $primary-50);
+    border: 1px solid $primary-200;
+  }
+  
+  &.totalSpent {
+    background: linear-gradient(135deg, white, #fef3c7);
+    border: 1px solid #fcd34d;
+  }
+  
+  &.totalRemaining {
+    background: linear-gradient(135deg, white, $secondary-50);
+    border: 1px solid $secondary-200;
+  }
+  
+  &.alerts {
+    background: linear-gradient(135deg, white, #fef2f2);
+    border: 1px solid #fecaca;
+  }
+  
+  .cardIcon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+  }
+  
+  .cardContent {
+    flex: 1;
+    
+    h3 {
+      font-size: $text-sm;
+      font-weight: $font-medium;
+      color: $gray-600;
+      margin-bottom: $spacing-1;
+    }
+    
+    .amount {
+      font-size: $text-xl;
+      font-weight: $font-bold;
+      font-family: $font-mono;
+      color: $gray-900;
+      margin-bottom: $spacing-1;
+    }
+    
+    .meta {
+      font-size: $text-xs;
+      color: $gray-500;
+    }
+  }
+}
+
+// フィルターセクション
+.filterSection {
+  display: flex;
+  gap: $spacing-4;
+  align-items: flex-end;
+  margin-bottom: $spacing-6;
+  flex-wrap: wrap;
+  
+  @include mobile {
+    gap: $spacing-3;
+  }
+  
+  .filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    
+    label {
+      font-size: $text-sm;
+      font-weight: $font-medium;
+      color: $gray-700;
+    }
+    
+    .filterSelect {
+      padding: $spacing-2 $spacing-3;
+      border: 2px solid $gray-200;
+      border-radius: $radius-lg;
+      font-size: $text-base;
+      background: white;
+      min-width: 150px;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary-500;
+      }
+    }
+  }
+  
+  .addButton {
+    @include button-base;
+    padding: $spacing-3 $spacing-6;
+    background: $gradient-love;
+    color: white;
+    border-radius: $radius-love;
+    font-weight: $font-medium;
+    box-shadow: $shadow-md;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-love-hover;
+    }
+    
+    .icon {
+      font-size: $text-lg;
+    }
+  }
+}
+
+// 予算リスト
+.budgetList {
+  display: grid;
+  gap: $spacing-4;
+}
+
+.emptyState {
+  text-align: center;
+  padding: $spacing-12 $spacing-6;
+  
+  .emptyIcon {
+    font-size: 4rem;
+    margin-bottom: $spacing-4;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-2;
+  }
+  
+  p {
+    color: $gray-600;
+    margin-bottom: $spacing-6;
+  }
+  
+  .emptyButton {
+    @include button-base;
+    padding: $spacing-3 $spacing-6;
+    background: $gradient-love;
+    color: white;
+    border-radius: $radius-love;
+    font-weight: $font-medium;
+    box-shadow: $shadow-md;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-love-hover;
+    }
+  }
+}
+
+// 予算カード
+.budgetCard {
+  background: white;
+  border-radius: $radius-xl;
+  padding: $spacing-6;
+  box-shadow: $shadow-md;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+  
+  &.loveBudget {
+    background: linear-gradient(135deg, white, $primary-50);
+    border: 1px solid $primary-200;
+  }
+}
+
+.budgetHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-4;
+  
+  .budgetInfo {
+    flex: 1;
+    
+    .budgetName {
+      font-size: $text-lg;
+      font-weight: $font-semibold;
+      color: $gray-900;
+      margin-bottom: $spacing-1;
+    }
+    
+    .budgetCategory {
+      font-size: $text-sm;
+      color: $gray-600;
+    }
+  }
+  
+  .budgetPeriod {
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+    padding: $spacing-1 $spacing-3;
+    background: $gray-100;
+    border-radius: $radius-full;
+    font-size: $text-sm;
+    color: $gray-700;
+    
+    .periodIcon {
+      font-size: $text-base;
+    }
+  }
+}
+
+.budgetProgress {
+  .progressHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: $spacing-2;
+    
+    .progressAmount {
+      .spent {
+        font-family: $font-mono;
+        font-weight: $font-semibold;
+        font-size: $text-lg;
+        color: $gray-900;
+      }
+      
+      .separator {
+        color: $gray-400;
+        margin: 0 $spacing-1;
+      }
+      
+      .total {
+        font-family: $font-mono;
+        color: $gray-600;
+      }
+    }
+    
+    .progressPercentage {
+      font-size: $text-lg;
+      font-weight: $font-bold;
+      color: $gray-700;
+    }
+  }
+  
+  .progressBar {
+    width: 100%;
+    height: 12px;
+    background: $gray-200;
+    border-radius: $radius-full;
+    overflow: hidden;
+    margin-bottom: $spacing-2;
+    
+    .progressFill {
+      height: 100%;
+      border-radius: $radius-full;
+      transition: width 0.5s ease, background 0.3s ease;
+      
+      &.progressSafe {
+        background: $gradient-success;
+      }
+      
+      &.progressWarning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+      }
+      
+      &.progressDanger {
+        background: linear-gradient(135deg, $error, darken($error, 10%));
+      }
+    }
+  }
+  
+  .progressMeta {
+    display: flex;
+    justify-content: space-between;
+    font-size: $text-sm;
+    color: $gray-600;
+    
+    .remaining {
+      font-family: $font-mono;
+    }
+  }
+}
+
+.budgetStatus {
+  margin: $spacing-4 0;
+  
+  .statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-1;
+    padding: $spacing-1 $spacing-3;
+    border-radius: $radius-full;
+    font-size: $text-sm;
+    font-weight: $font-medium;
+    
+    &:has(.icon:contains('✅')) {
+      background: #f0fdf4;
+      color: $success;
+      border: 1px solid #bbf7d0;
+    }
+    
+    &:has(.icon:contains('⚠️')) {
+      background: #fef3c7;
+      color: #d97706;
+      border: 1px solid #fcd34d;
+    }
+    
+    &:has(.icon:contains('🚨')) {
+      background: #fef2f2;
+      color: $error;
+      border: 1px solid #fecaca;
+    }
+  }
+}
+
+.budgetActions {
+  display: flex;
+  gap: $spacing-2;
+  justify-content: flex-end;
+  
+  button {
+    @include button-base;
+    padding: $spacing-2 $spacing-4;
+    border-radius: $radius-md;
+    font-size: $text-sm;
+    font-weight: $font-medium;
+    transition: all 0.3s ease;
+  }
+  
+  .editButton {
+    background: $primary-100;
+    color: $primary-700;
+    border: 1px solid $primary-300;
+    
+    &:hover {
+      background: $primary-200;
+      transform: translateY(-1px);
+    }
+  }
+  
+  .deleteButton {
+    background: #fef2f2;
+    color: $error;
+    border: 1px solid #fecaca;
+    
+    &:hover {
+      background: #fee2e2;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}

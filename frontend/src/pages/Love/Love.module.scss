@@ -1,0 +1,760 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.lovePage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fdf2f8, #eff6ff);
+}
+
+.pageContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-6;
+  padding-top: calc(80px + $spacing-6);
+  
+  @include mobile {
+    padding: $spacing-4;
+    padding-top: calc(70px + $spacing-4);
+  }
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: $spacing-8;
+  
+  .pageTitle {
+    font-size: $text-3xl;
+    font-weight: $font-bold;
+    background: $gradient-love;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: $spacing-2;
+    
+    @include mobile {
+      font-size: $text-2xl;
+    }
+  }
+  
+  .pageSubtitle {
+    font-size: $text-lg;
+    color: $gray-600;
+    font-style: italic;
+  }
+}
+
+// タブナビゲーション
+.tabNavigation {
+  display: flex;
+  gap: $spacing-3;
+  justify-content: center;
+  margin-bottom: $spacing-6;
+  flex-wrap: wrap;
+  
+  .tabButton {
+    @include button-base;
+    padding: $spacing-3 $spacing-6;
+    background: white;
+    border: 2px solid $primary-200;
+    border-radius: $radius-love;
+    font-weight: $font-medium;
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    transition: all 0.3s ease;
+    color: $gray-700;
+    
+    &:hover {
+      background: $primary-50;
+      border-color: $primary-300;
+      transform: translateY(-2px);
+    }
+    
+    &.active {
+      background: $gradient-love;
+      color: white;
+      border-color: transparent;
+      box-shadow: $shadow-love;
+    }
+    
+    .tabIcon {
+      font-size: $text-lg;
+    }
+  }
+}
+
+.tabContent {
+  animation: fadeIn 0.5s ease;
+}
+
+// パートナーがいない場合の案内
+.partnerRequired {
+  background: white;
+  border-radius: $radius-2xl;
+  padding: $spacing-8;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: $shadow-love;
+  
+  .partnerIcon {
+    font-size: 4rem;
+    margin-bottom: $spacing-4;
+  }
+  
+  h2 {
+    font-size: $text-2xl;
+    font-weight: $font-bold;
+    color: $primary-600;
+    margin-bottom: $spacing-4;
+  }
+  
+  p {
+    color: $gray-600;
+    margin-bottom: $spacing-3;
+    line-height: $leading-relaxed;
+  }
+  
+  .partnerButton {
+    @include button-primary;
+    margin-top: $spacing-6;
+    padding: $spacing-3 $spacing-6;
+    font-size: $text-lg;
+  }
+}
+
+// 統計グリッド
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-4;
+  margin-bottom: $spacing-8;
+  
+  .statCard {
+    background: white;
+    border-radius: $radius-xl;
+    padding: $spacing-5;
+    box-shadow: $shadow-md;
+    transition: all 0.3s ease;
+    text-align: center;
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: $shadow-love;
+    }
+    
+    .statIcon {
+      font-size: 2.5rem;
+      margin-bottom: $spacing-3;
+    }
+    
+    .statContent {
+      h3 {
+        font-size: $text-sm;
+        color: $gray-600;
+        margin-bottom: $spacing-2;
+      }
+      
+      .statValue {
+        font-size: $text-2xl;
+        font-weight: $font-bold;
+        color: $primary-600;
+      }
+    }
+  }
+}
+
+// チャートセクション
+.chartsSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-6;
+  margin-bottom: $spacing-8;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+  
+  .chartCard {
+    background: white;
+    border-radius: $radius-xl;
+    padding: $spacing-6;
+    box-shadow: $shadow-md;
+    
+    h3 {
+      font-size: $text-lg;
+      font-weight: $font-semibold;
+      color: $gray-900;
+      margin-bottom: $spacing-4;
+      text-align: center;
+    }
+    
+    .chartContainer {
+      height: 300px;
+      position: relative;
+    }
+  }
+}
+
+// 今後のイベント
+.upcomingEvents {
+  background: white;
+  border-radius: $radius-xl;
+  padding: $spacing-6;
+  box-shadow: $shadow-md;
+  margin-bottom: $spacing-6;
+  
+  h3 {
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-4;
+  }
+  
+  .eventsList {
+    display: grid;
+    gap: $spacing-3;
+    
+    .eventCard {
+      display: flex;
+      gap: $spacing-3;
+      padding: $spacing-4;
+      background: $primary-50;
+      border-radius: $radius-lg;
+      align-items: center;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: $primary-100;
+        transform: translateX(4px);
+      }
+      
+      .eventIcon {
+        font-size: 2rem;
+      }
+      
+      .eventInfo {
+        flex: 1;
+        
+        h4 {
+          font-weight: $font-semibold;
+          color: $gray-900;
+          margin-bottom: $spacing-1;
+        }
+        
+        .eventDate {
+          font-size: $text-sm;
+          color: $gray-600;
+          
+          .today {
+            color: $error;
+            font-weight: $font-semibold;
+          }
+        }
+      }
+    }
+  }
+}
+
+// イベントセクション
+.eventsSection {
+  .sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-6;
+    
+    h2 {
+      font-size: $text-2xl;
+      font-weight: $font-semibold;
+      color: $gray-900;
+    }
+    
+    .addButton {
+      @include button-base;
+      display: flex;
+      align-items: center;
+      gap: $spacing-2;
+      padding: $spacing-3 $spacing-5;
+      background: $gradient-love;
+      color: white;
+      border-radius: $radius-love;
+      font-weight: $font-semibold;
+      box-shadow: $shadow-love;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: $shadow-love-hover;
+      }
+    }
+  }
+  
+  .eventsList {
+    display: grid;
+    gap: $spacing-4;
+    
+    .eventItem {
+      display: flex;
+      gap: $spacing-4;
+      padding: $spacing-5;
+      background: white;
+      border-radius: $radius-xl;
+      box-shadow: $shadow-md;
+      align-items: center;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: $shadow-lg;
+      }
+      
+      .eventIcon {
+        font-size: 3rem;
+      }
+      
+      .eventDetails {
+        flex: 1;
+        
+        h4 {
+          font-size: $text-lg;
+          font-weight: $font-semibold;
+          color: $gray-900;
+          margin-bottom: $spacing-2;
+        }
+        
+        .eventDate {
+          font-size: $text-sm;
+          color: $gray-600;
+          margin-bottom: $spacing-1;
+          
+          .recurring {
+            color: $primary-600;
+            font-weight: $font-medium;
+          }
+        }
+        
+        .eventDescription {
+          font-size: $text-sm;
+          color: $gray-500;
+        }
+      }
+      
+      .eventActions {
+        display: flex;
+        gap: $spacing-2;
+        
+        button {
+          @include button-base;
+          padding: $spacing-2 $spacing-4;
+          font-size: $text-sm;
+          border-radius: $radius-md;
+          transition: all 0.3s ease;
+          
+          &.editButton {
+            background: $secondary-100;
+            color: $secondary-700;
+            
+            &:hover {
+              background: $secondary-200;
+            }
+          }
+          
+          &.deleteButton {
+            background: #fef2f2;
+            color: $error;
+            
+            &:hover {
+              background: #fecaca;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// メモリーセクション
+.memoriesSection {
+  .sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-6;
+    
+    h2 {
+      font-size: $text-2xl;
+      font-weight: $font-semibold;
+      color: $gray-900;
+    }
+    
+    .addButton {
+      @include button-base;
+      display: flex;
+      align-items: center;
+      gap: $spacing-2;
+      padding: $spacing-3 $spacing-5;
+      background: $gradient-love;
+      color: white;
+      border-radius: $radius-love;
+      font-weight: $font-semibold;
+      box-shadow: $shadow-love;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: $shadow-love-hover;
+      }
+    }
+  }
+}
+
+// 空の状態
+.emptyState {
+  padding: $spacing-12 $spacing-6;
+  text-align: center;
+  
+  .emptyIcon {
+    font-size: 4rem;
+    margin-bottom: $spacing-4;
+    opacity: 0.7;
+  }
+  
+  h3 {
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-2;
+  }
+  
+  p {
+    font-size: $text-base;
+    color: $gray-600;
+  }
+}
+
+// パートナーシップセクション（招待画面）
+.partnershipSection {
+  animation: fadeIn 0.5s ease;
+  
+  .errorMessage, .successMessage {
+    padding: $spacing-3 $spacing-4;
+    border-radius: $radius-lg;
+    margin-bottom: $spacing-6;
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-weight: $font-medium;
+    
+    .errorIcon, .successIcon {
+      font-size: $text-lg;
+    }
+  }
+  
+  .errorMessage {
+    background: #fef2f2;
+    color: $error;
+    border: 1px solid #fecaca;
+  }
+  
+  .successMessage {
+    background: #f0fdf4;
+    color: $success;
+    border: 1px solid #bbf7d0;
+  }
+  
+  .inviteGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-6;
+    margin-bottom: $spacing-8;
+    
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .inviteCard, .joinCard, .infoCard {
+    background: white;
+    border-radius: $radius-xl;
+    padding: $spacing-6;
+    box-shadow: $shadow-md;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-lg;
+    }
+    
+    .sectionTitle {
+      font-size: $text-xl;
+      font-weight: $font-semibold;
+      color: $gray-900;
+      margin-bottom: $spacing-4;
+      display: flex;
+      align-items: center;
+      gap: $spacing-2;
+      
+      .icon {
+        font-size: 1.5rem;
+      }
+    }
+    
+    .description {
+      color: $gray-600;
+      margin-bottom: $spacing-6;
+      line-height: $leading-relaxed;
+    }
+  }
+  
+  .inviteCodeDisplay {
+    .codeBox {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-4;
+      background: $primary-50;
+      border: 2px solid $primary-200;
+      border-radius: $radius-lg;
+      margin-bottom: $spacing-3;
+      
+      .code {
+        font-family: $font-mono;
+        font-size: $text-2xl;
+        font-weight: $font-bold;
+        color: $primary-700;
+        letter-spacing: 0.1em;
+      }
+      
+      .copyButton {
+        @include button-base;
+        padding: $spacing-2 $spacing-3;
+        background: $primary-100;
+        border-radius: $radius-md;
+        font-size: $text-lg;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background: $primary-200;
+          transform: scale(1.1);
+        }
+      }
+    }
+    
+    .codeNote {
+      font-size: $text-sm;
+      color: $gray-500;
+      text-align: center;
+    }
+  }
+  
+  .joinForm {
+    display: flex;
+    gap: $spacing-3;
+    
+    .input {
+      flex: 1;
+      padding: $spacing-3 $spacing-4;
+      border: 2px solid $gray-200;
+      border-radius: $radius-lg;
+      font-size: $text-lg;
+      font-family: $font-mono;
+      text-align: center;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary-500;
+        box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+      }
+    }
+  }
+  
+  .button {
+    @include button-base;
+    padding: $spacing-3 $spacing-6;
+    border-radius: $radius-lg;
+    font-weight: $font-semibold;
+    transition: all 0.3s ease;
+    
+    &.buttonPrimary {
+      background: $gradient-love;
+      color: white;
+      box-shadow: $shadow-love;
+      
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: $shadow-love-hover;
+      }
+      
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+  
+  .infoCard {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, white, $primary-50);
+    border: 2px solid $primary-200;
+    
+    .featureList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: $spacing-3;
+      
+      li {
+        padding: $spacing-3;
+        background: white;
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          transform: translateX(4px);
+          box-shadow: $shadow-md;
+        }
+      }
+    }
+  }
+}
+
+// ローディング
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding-top: 80px;
+  
+  .loadingSpinner {
+    font-size: 3rem;
+    animation: heartbeat 1.5s ease-in-out infinite;
+    margin-bottom: $spacing-4;
+  }
+  
+  p {
+    font-size: $text-lg;
+    color: $gray-600;
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.1); 
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Memories styles
+.memoriesList {
+  display: grid;
+  gap: $spacing-4;
+}
+
+.memoryItem {
+  background: linear-gradient(135deg, white, rgba($primary-50, 0.5));
+  border: 1px solid $gray-200;
+  border-radius: $radius-xl;
+  padding: $spacing-5;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: $spacing-4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba($primary-500, 0.2);
+  }
+}
+
+.memoryContent {
+  flex: 1;
+  
+  h4 {
+    font-size: $text-lg;
+    font-weight: $font-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-2;
+  }
+}
+
+.memoryDescription {
+  color: $gray-600;
+  font-size: $text-base;
+  line-height: 1.6;
+  margin-bottom: $spacing-3;
+}
+
+.memoryDate {
+  font-size: $text-sm;
+  color: $gray-500;
+  
+  &::before {
+    content: '📅 ';
+    margin-right: $spacing-1;
+  }
+}
+
+.memoryPhotos {
+  display: flex;
+  gap: $spacing-2;
+  margin-top: $spacing-3;
+  flex-wrap: wrap;
+}
+
+.memoryPhoto {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: $radius-lg;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.memoryActions {
+  display: flex;
+  gap: $spacing-2;
+  
+  .deleteButton {
+    @include button-base;
+    padding: $spacing-2 $spacing-3;
+    color: $error;
+    border: 1px solid $error;
+    border-radius: $radius-md;
+    font-size: $text-sm;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: $error;
+      color: white;
+      transform: translateY(-1px);
+    }
+  }
+}

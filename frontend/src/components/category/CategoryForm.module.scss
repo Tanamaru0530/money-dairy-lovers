@@ -1,0 +1,224 @@
+@import '@/styles/variables.scss';
+@import '@/styles/variables-theme.scss';
+
+.formOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $spacing-4;
+  animation: fadeIn 0.3s ease;
+}
+
+.formContainer {
+  background: white;
+  border-radius: $radius-2xl;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: $shadow-2xl;
+  animation: slideUp 0.3s ease;
+}
+
+.formHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-6;
+  border-bottom: 1px solid $gray-200;
+}
+
+.formTitle {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  margin: 0;
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: $gray-500;
+  font-size: $text-xl;
+  cursor: pointer;
+  border-radius: $radius-md;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: $gray-100;
+    color: $gray-700;
+  }
+}
+
+.form {
+  padding: $spacing-6;
+}
+
+.errorBanner {
+  background: $error;
+  color: white;
+  padding: $spacing-3 $spacing-4;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-6;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+}
+
+.formSection {
+  margin-bottom: $spacing-6;
+}
+
+.label {
+  display: block;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gray-700;
+  margin-bottom: $spacing-2;
+}
+
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: $spacing-2;
+  margin-bottom: $spacing-4;
+}
+
+.iconOption {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 2px solid $gray-200;
+  background: white;
+  border-radius: $radius-lg;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: $primary-300;
+    background: $primary-50;
+    transform: scale(1.05);
+  }
+  
+  &.selected {
+    border-color: $primary-500;
+    background: $primary-100;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.2);
+  }
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: $spacing-2;
+  margin-bottom: $spacing-4;
+}
+
+.colorOption {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  &.selected {
+    border-color: $gray-800;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    
+    &::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 1.25rem;
+      font-weight: bold;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+.colorPreview {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-3;
+  background: $gray-50;
+  border-radius: $radius-lg;
+}
+
+.previewBox {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewIcon {
+  font-size: 1.5rem;
+}
+
+.previewText {
+  font-size: $text-base;
+  font-weight: $font-medium;
+  color: $gray-700;
+}
+
+.formActions {
+  display: flex;
+  gap: $spacing-3;
+  justify-content: flex-end;
+  margin-top: $spacing-8;
+  padding-top: $spacing-6;
+  border-top: 1px solid $gray-200;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Responsive
+@media (max-width: $breakpoint-sm) {
+  .formContainer {
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .iconGrid,
+  .colorGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

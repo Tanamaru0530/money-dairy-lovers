@@ -1,0 +1,308 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/variables-theme.scss';
+@import '../../../styles/mixins.scss';
+
+.verificationPage {
+  min-height: 100vh;
+  background: $gradient-page;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-4;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba($primary-300, 0.1) 0%, transparent 70%);
+    animation: rotate 30s linear infinite;
+  }
+}
+
+.verificationContainer {
+  width: 100%;
+  max-width: 500px;
+  z-index: 1;
+  position: relative;
+}
+
+.verificationCard {
+  background: $surface;
+  border-radius: $radius-2xl;
+  box-shadow: $shadow-love;
+  padding: $spacing-8;
+  animation: fadeInUp 0.6s ease-out;
+
+  @include mobile {
+    padding: $spacing-6;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-8;
+}
+
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, $primary-100, $primary-200);
+  border-radius: 50%;
+  margin-bottom: $spacing-4;
+  animation: heartbeat 2s ease-in-out infinite;
+
+  .icon {
+    font-size: 2.5rem;
+  }
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $text-primary;
+  margin-bottom: $spacing-2;
+
+  @include mobile {
+    font-size: $text-xl;
+  }
+}
+
+.subtitle {
+  color: $text-secondary;
+  font-size: $text-base;
+  line-height: $leading-relaxed;
+  word-break: break-word;
+}
+
+.form {
+  margin-bottom: $spacing-6;
+}
+
+.codeInputContainer {
+  display: flex;
+  gap: $spacing-3;
+  justify-content: center;
+  margin-bottom: $spacing-6;
+
+  @include mobile {
+    gap: $spacing-2;
+  }
+}
+
+.codeInput {
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 2px solid $border-color;
+  border-radius: $radius-lg;
+  text-align: center;
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  font-family: $font-mono;
+  background: $surface;
+  color: $text-primary;
+  transition: all 0.2s ease;
+
+  @include mobile {
+    width: 3rem;
+    height: 3rem;
+    font-size: $text-xl;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+    background: $primary-50;
+  }
+
+  &:hover:not(:focus) {
+    border-color: $primary-300;
+  }
+
+  // 数字以外の文字を入力した場合の視覚的フィードバック
+  &:invalid {
+    border-color: $error;
+    animation: shake 0.3s ease-in-out;
+  }
+}
+
+.resendSection {
+  text-align: center;
+  padding: $spacing-4 0;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  margin-bottom: $spacing-4;
+}
+
+.resendText {
+  color: $text-secondary;
+  margin-bottom: $spacing-2;
+  font-size: $text-sm;
+}
+
+.cooldownText {
+  color: $primary-600;
+  font-weight: $font-medium;
+  font-size: $text-base;
+}
+
+.resendButton {
+  background: none;
+  border: none;
+  color: $primary-600;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: $text-base;
+  padding: $spacing-2 $spacing-4;
+  border-radius: $radius-md;
+
+  &:hover:not(:disabled) {
+    background: $primary-50;
+    text-decoration: underline;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.helpSection {
+  margin-bottom: $spacing-6;
+}
+
+.helpItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-3;
+  background: $bg-secondary;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-2;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.helpIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.helpText {
+  color: $text-secondary;
+  font-size: $text-sm;
+  margin: 0;
+}
+
+.backLink {
+  text-align: center;
+}
+
+.skipButton {
+  background: none;
+  border: none;
+  color: $text-secondary;
+  font-size: $text-sm;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: $spacing-2 $spacing-3;
+
+  &:hover {
+    color: $primary-600;
+    text-decoration: underline;
+  }
+}
+
+.decoration {
+  position: absolute;
+  top: $spacing-8;
+  right: $spacing-8;
+  pointer-events: none;
+
+  @include mobile {
+    display: none;
+  }
+}
+
+.floatingHearts {
+  display: flex;
+  gap: $spacing-4;
+
+  .heart {
+    font-size: 2rem;
+    animation: float 3s ease-in-out infinite;
+    opacity: 0.6;
+
+    &:nth-child(1) {
+      animation-delay: 0s;
+    }
+    &:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+    &:nth-child(3) {
+      animation-delay: 1s;
+    }
+  }
+}
+
+// Animations
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
+  }
+}
