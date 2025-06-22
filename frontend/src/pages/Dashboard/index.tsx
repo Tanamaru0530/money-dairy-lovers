@@ -120,10 +120,10 @@ export const Dashboard: React.FC = () => {
         <div className={styles.welcomeSection}>
           <h1 className={styles.welcomeTitle}>
             <span className={styles.icon}>💕</span>
-            おかえりなさい、{user?.display_name || 'ユーザー'}さん！
+            こんにちは、{user?.display_name || 'ユーザー'}さん
           </h1>
           <p className={styles.welcomeSubtitle}>
-            今日も愛を込めて家計管理をしましょう
+            今月も愛のある家計管理を頑張りましょう！
           </p>
         </div>
 
@@ -302,6 +302,51 @@ export const Dashboard: React.FC = () => {
               <div className={styles.actionIcon}>💕</div>
               <span className={styles.actionText}>Love イベント</span>
             </Link>
+          </div>
+        </div>
+
+        {/* Love Goals セクション */}
+        <div className={styles.loveGoals}>
+          <h2 className={styles.sectionTitle}>
+            <span className={styles.icon}>🎯</span>
+            Love Goals
+          </h2>
+          <div className={styles.goalsList}>
+            <div className={styles.goalItem}>
+              <div className={styles.goalHeader}>
+                <span className={styles.goalName}>デート資金</span>
+              </div>
+              <div className={styles.goalProgress}>
+                <div className={styles.progressBar}>
+                  <div 
+                    className={styles.progressFill} 
+                    style={{ width: '65%' }}
+                  />
+                </div>
+                <div className={styles.progressText}>
+                  <span>¥13,000</span>
+                  <span>¥20,000</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className={`${styles.goalItem} ${styles.specialGoal}`}>
+              <div className={styles.goalHeader}>
+                <span className={styles.goalName}>結婚資金 💍</span>
+              </div>
+              <div className={styles.goalProgress}>
+                <div className={styles.progressBar}>
+                  <div 
+                    className={styles.progressFill} 
+                    style={{ width: '35%' }}
+                  />
+                </div>
+                <div className={styles.progressText}>
+                  <span>¥350,000</span>
+                  <span>¥1,000,000</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>

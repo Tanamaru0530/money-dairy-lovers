@@ -1,0 +1,92 @@
+@import '../../styles/variables.scss';
+@import '../../styles/variables-theme.scss';
+@import '../../styles/mixins.scss';
+
+.bottomNav {
+  @include bottom-sheet;
+  padding-top: $spacing-2;
+  padding-bottom: $spacing-2;
+  display: none;
+  
+  @include touch-device {
+    display: block;
+  }
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-2;
+  text-decoration: none;
+  color: $gray-500;
+  transition: all 0.3s ease;
+  position: relative;
+  min-width: 60px;
+  @include touch-optimized;
+  @include touch-feedback($gray-100);
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  &.active {
+    color: $primary-600;
+    
+    .navIcon {
+      transform: scale(1.1);
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: $primary-600;
+      border-radius: 50%;
+    }
+  }
+  
+  &.primary {
+    .navIcon {
+      background: $gradient-love;
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: $text-xl;
+      box-shadow: $shadow-love;
+      margin-bottom: $spacing-1;
+    }
+    
+    &:active .navIcon {
+      transform: scale(0.9);
+    }
+  }
+}
+
+.navIcon {
+  font-size: $text-xl;
+  margin-bottom: $spacing-1;
+  transition: transform 0.3s ease;
+}
+
+.navLabel {
+  font-size: $text-xs;
+  font-weight: $font-medium;
+}

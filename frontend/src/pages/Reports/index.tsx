@@ -466,14 +466,14 @@ export const Reports: React.FC = () => {
           
           <div className={styles.loveCategoryList}>
             {(loveStats.loveSpendingByCategory || loveStats.love_spending_by_category || []).map(cat => (
-              <div key={cat.category_id} className={styles.loveCategoryItem}>
+              <div key={cat.categoryId} className={styles.loveCategoryItem}>
                 <div className={styles.categoryInfo}>
-                  <span className={styles.categoryIcon}>{cat.category_icon}</span>
-                  <span className={styles.categoryName}>{cat.category_name}</span>
+                  <span className={styles.categoryIcon}>{cat.categoryIcon}</span>
+                  <span className={styles.categoryName}>{cat.categoryName}</span>
                 </div>
                 <div className={styles.categoryStats}>
-                  <span className={styles.categoryAmount}>¥{(cat.total_amount || 0).toLocaleString()}</span>
-                  <span className={styles.categoryCount}>{cat.transaction_count || 0}件</span>
+                  <span className={styles.categoryAmount}>¥{(cat.totalAmount || 0).toLocaleString()}</span>
+                  <span className={styles.categoryCount}>{cat.transactionCount || 0}件</span>
                 </div>
               </div>
             ))}
@@ -488,10 +488,10 @@ export const Reports: React.FC = () => {
               最も愛されたカテゴリ
             </h2>
             <div className={styles.favoriteCard}>
-              <div className={styles.favoriteIcon}>{(loveStats.favoriteLoveCategory || loveStats.favorite_love_category)?.category_icon}</div>
-              <h3>{(loveStats.favoriteLoveCategory || loveStats.favorite_love_category)?.category_name}</h3>
-              <p className={styles.favoriteAmount}>¥{((loveStats.favoriteLoveCategory || loveStats.favorite_love_category)?.total_amount || 0).toLocaleString()}</p>
-              <p className={styles.favoriteMeta}>{(loveStats.favoriteLoveCategory || loveStats.favorite_love_category)?.transaction_count || 0}回の愛の記録</p>
+              <div className={styles.favoriteIcon}>{(loveStats.favoriteLoveCategory || loveStats.favorite_love_category)?.categoryIcon}</div>
+              <h3>{(loveStats.favoriteLoveCategory || loveStats.favorite_love_category)?.categoryName}</h3>
+              <p className={styles.favoriteAmount}>¥{((loveStats.favoriteLoveCategory || loveStats.favorite_love_category)?.totalAmount || 0).toLocaleString()}</p>
+              <p className={styles.favoriteMeta}>{(loveStats.favoriteLoveCategory || loveStats.favorite_love_category)?.transactionCount || 0}回の愛の記録</p>
             </div>
           </div>
         )}

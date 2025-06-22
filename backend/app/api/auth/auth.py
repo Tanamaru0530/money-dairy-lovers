@@ -15,6 +15,7 @@ from app.core.config import settings
 from app.core.deps import get_db, get_current_user
 from app.utils.email import email_sender
 from app.utils.rate_limiter import limiter, RateLimits
+from app.services.user_init import initialize_user_data
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -52,6 +53,13 @@ def register(
     db.add(user)
     db.commit()
     db.refresh(user)
+    
+    # 新規ユーザー用の初期データを作成
+    try:
+        initialize_user_data(db, str(user.id))
+    except Exception as e:
+        logger.error(f"Failed to initialize user data: {str(e)}")
+        # 初期データ作成に失敗してもユーザー登録は成功とする
     
     # メール確認コードを生成して送信
     verification_code = generate_verification_code()

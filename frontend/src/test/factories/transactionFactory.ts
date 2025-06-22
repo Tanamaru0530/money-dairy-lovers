@@ -44,21 +44,21 @@ export const createMockTransaction = (overrides?: Partial<Transaction>): Transac
   
   return {
     id: 'trans-123',
-    userId: '123',
-    categoryId: 'cat-123',
+    user_id: '123',
+    category_id: 'cat-123',
     category: createMockCategory(),
     amount: 1000,
-    transactionType: 'expense',
-    sharingType: 'personal',
-    paymentMethod: 'cash',
+    transaction_type: 'expense',
+    sharing_type: 'personal',
+    payment_method: 'cash',
     description: 'ランチ代',
-    transactionDate: new Date().toISOString().split('T')[0],
-    loveRating: undefined,
+    transaction_date: new Date().toISOString().split('T')[0],
+    love_rating: undefined,
     tags: [],
     location: undefined,
-    receiptImageUrl: undefined,
-    createdAt: now,
-    updatedAt: now,
+    receipt_image_url: undefined,
+    created_at: now,
+    updated_at: now,
     ...overrides,
   };
 };
@@ -68,11 +68,11 @@ export const createMockTransaction = (overrides?: Partial<Transaction>): Transac
  */
 export const createMockLoveTransaction = (overrides?: Partial<Transaction>): Transaction => {
   return createMockTransaction({
-    categoryId: 'cat-love-123',
+    category_id: 'cat-love-123',
     category: createMockLoveCategory(),
-    sharingType: 'shared',
+    sharing_type: 'shared',
     description: '映画デート',
-    loveRating: 5,
+    love_rating: 5,
     tags: ['デート', '映画'],
     ...overrides,
   });
@@ -83,12 +83,12 @@ export const createMockLoveTransaction = (overrides?: Partial<Transaction>): Tra
  */
 export const createMockSharedTransaction = (overrides?: Partial<Transaction>): Transaction => {
   return createMockTransaction({
-    sharingType: 'shared',
-    sharedInfo: {
-      splitType: 'equal',
-      user1Amount: 500,
-      user2Amount: 500,
-      payerUserId: '123',
+    sharing_type: 'shared',
+    shared_info: {
+      split_type: 'equal',
+      user1_amount: 500,
+      user2_amount: 500,
+      payer_user_id: '123',
       notes: '折半',
     },
     ...overrides,
@@ -102,13 +102,13 @@ export const createMockTransactionCreate = (
   overrides?: Partial<TransactionCreate>
 ): TransactionCreate => {
   return {
-    categoryId: 'cat-123',
+    category_id: 'cat-123',
     amount: 1000,
-    transactionType: 'expense',
-    sharingType: 'personal',
-    paymentMethod: 'cash',
+    transaction_type: 'expense',
+    sharing_type: 'personal',
+    payment_method: 'cash',
     description: 'テスト取引',
-    transactionDate: new Date().toISOString().split('T')[0],
+    transaction_date: new Date().toISOString().split('T')[0],
     ...overrides,
   };
 };
@@ -122,7 +122,7 @@ export const createMockTransactionList = (count: number = 5): Transaction[] => {
       id: `trans-${index + 1}`,
       amount: (index + 1) * 1000,
       description: `取引 ${index + 1}`,
-      transactionDate: new Date(Date.now() - index * 24 * 60 * 60 * 1000)
+      transaction_date: new Date(Date.now() - index * 24 * 60 * 60 * 1000)
         .toISOString()
         .split('T')[0],
     })

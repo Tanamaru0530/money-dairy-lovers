@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import styles from './Button.module.scss';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline-love' | 'ghost' | 'love-special';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   fullWidth?: boolean;

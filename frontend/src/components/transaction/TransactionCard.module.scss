@@ -1,17 +1,35 @@
 @import '../../styles/variables';
 @import '../../styles/mixins';
 
+.transactionCardWrapper {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: $spacing-3;
+  
+  @include touch-device {
+    overflow: visible;
+  }
+}
+
 .transactionCard {
   background: white;
   border-radius: $radius-xl;
   box-shadow: $shadow-md;
   overflow: hidden;
-  transition: all 0.3s ease;
-  margin-bottom: $spacing-3;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 1;
+  @include touch-feedback;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: $shadow-lg;
+    @media (hover: hover) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-lg;
+    }
+  }
+  
+  &.swiping {
+    transition: none;
   }
 
   &.loveCard {
@@ -239,6 +257,10 @@
   @include mobile {
     padding: $spacing-2 $spacing-3;
   }
+  
+  @include touch-device {
+    display: none; // モバイルではスワイプアクションを使用
+  }
 
   .actionBtn {
     padding: $spacing-1 $spacing-3;
@@ -249,11 +271,14 @@
     font-size: $text-xs;
     font-weight: $font-medium;
     transition: all 0.3s ease;
+    @include touch-optimized;
 
     &:hover {
-      border-color: $primary-500;
-      color: $primary-600;
-      transform: translateY(-1px);
+      @media (hover: hover) {
+        border-color: $primary-500;
+        color: $primary-600;
+        transform: translateY(-1px);
+      }
     }
 
     &--edit {
@@ -268,9 +293,80 @@
       }
 
       &:hover {
-        border-color: $error;
-        color: $error;
+        @media (hover: hover) {
+          border-color: $error;
+          color: $error;
+        }
       }
     }
   }
+}
+
+// スワイプアクション
+.swipeActions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 1px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 0;
+  
+  &.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  @media (hover: hover) {
+    display: none; // デスクトップでは非表示
+  }
+}
+
+.swipeAction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 $spacing-4;
+  border: none;
+  cursor: pointer;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: white;
+  min-width: 75px;
+  background: $gray-500;
+  transition: background 0.3s ease;
+  
+  &:active {
+    opacity: 0.8;
+  }
+  
+  &Edit {
+    background: $secondary-500;
+    
+    &:hover {
+      background: $secondary-600;
+    }
+  }
+  
+  &Delete {
+    background: $error;
+    
+    &:hover {
+      background: darken($error, 10%);
+    }
+  }
+}
+
+.swipeActionIcon {
+  font-size: $text-lg;
+  margin-bottom: $spacing-1;
+}
+
+.swipeActionText {
+  font-size: $text-xs;
 }

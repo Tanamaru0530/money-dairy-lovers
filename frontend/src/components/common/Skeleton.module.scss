@@ -1,0 +1,293 @@
+@import '../../styles/variables.scss';
+@import '../../styles/variables-theme.scss';
+@import '../../styles/mixins.scss';
+
+// 基本スケルトンスタイル
+.skeleton {
+  background: linear-gradient(90deg, $gray-200 0%, $gray-100 50%, $gray-200 100%);
+  background-size: 200% 100%;
+  border-radius: $radius-md;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  
+  // バリアント
+  &.text {
+    height: 1em;
+    margin: 0.25em 0;
+    border-radius: $radius-sm;
+  }
+  
+  &.rectangular {
+    border-radius: $radius-lg;
+  }
+  
+  &.circular {
+    border-radius: 50%;
+  }
+  
+  &.button {
+    height: 36px;
+    border-radius: $radius-love;
+  }
+  
+  // アニメーション
+  &.pulse {
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+  }
+  
+  &.wave {
+    animation: skeleton-wave 1.5s linear infinite;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+      );
+      animation: skeleton-shimmer 1.5s linear infinite;
+    }
+  }
+  
+  &.none {
+    animation: none;
+  }
+}
+
+// アニメーション定義
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes skeleton-wave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// 複合コンポーネント
+.skeletonWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.skeletonTextWrapper {
+  width: 100%;
+}
+
+// カードスケルトン
+.skeletonCard {
+  background: white;
+  border-radius: $radius-xl;
+  padding: $spacing-4;
+  box-shadow: $shadow-sm;
+}
+
+.skeletonCardHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin-bottom: $spacing-4;
+}
+
+.skeletonCardHeaderText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.skeletonCardActions {
+  display: flex;
+  gap: $spacing-2;
+  margin-top: $spacing-4;
+}
+
+// ダッシュボード用スケルトン
+.skeletonDashboardSummary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-4;
+  margin-bottom: $spacing-6;
+}
+
+.skeletonSummaryCard {
+  background: white;
+  border-radius: $radius-xl;
+  padding: $spacing-4;
+  box-shadow: $shadow-sm;
+  display: flex;
+  gap: $spacing-3;
+  align-items: center;
+}
+
+.skeletonSummaryContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+// チャートスケルトン
+.skeletonChart {
+  background: white;
+  border-radius: $radius-xl;
+  padding: $spacing-6;
+  box-shadow: $shadow-sm;
+}
+
+.skeletonChartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-4;
+}
+
+// トランザクションリストスケルトン
+.skeletonTransactionList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.skeletonTransactionItem {
+  background: white;
+  border-radius: $radius-lg;
+  padding: $spacing-3;
+  box-shadow: $shadow-sm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skeletonTransactionLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  flex: 1;
+}
+
+.skeletonTransactionInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+// Love Goals スケルトン
+.skeletonLoveGoals {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.skeletonGoalItem {
+  background: linear-gradient(135deg, white, $primary-50);
+  border-radius: $radius-lg;
+  padding: $spacing-4;
+  border: 1px solid $primary-200;
+}
+
+.skeletonProgressBar {
+  margin: $spacing-3 0;
+}
+
+.skeletonProgressText {
+  display: flex;
+  justify-content: space-between;
+}
+
+// カテゴリカードスケルトン
+.skeletonCategoryCard {
+  background: white;
+  border-radius: $radius-xl;
+  padding: $spacing-5;
+  box-shadow: $shadow-sm;
+  border: 1px solid $gray-200;
+}
+
+.skeletonCategoryHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin-bottom: $spacing-4;
+}
+
+.skeletonCategoryInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.skeletonCategoryStats {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.skeletonStatItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+// カテゴリグリッドスケルトン
+.skeletonCategoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $spacing-4;
+  
+  &.love {
+    .skeletonCategoryCard {
+      background: linear-gradient(135deg, white, $primary-50);
+      border-color: $primary-200;
+    }
+  }
+}
+
+// レスポンシブ対応
+@include mobile {
+  .skeletonDashboardSummary {
+    grid-template-columns: 1fr;
+  }
+  
+  .skeletonTransactionItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-2;
+  }
+  
+  .skeletonCategoryGrid {
+    grid-template-columns: 1fr;
+  }
+}

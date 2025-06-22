@@ -81,3 +81,55 @@ Thumbs.db
 backup/*.sql
 backup/*.gz
 backup/*.tar
+backups/
+*.sql
+*.dump
+
+# Test files
+test_*.py
+!backend/tests/test_*.py
+
+# Production configs
+.env.production
+.env.prod
+
+# Local development
+postgres_data/
+redis_data/
+
+# Temporary files
+*.tmp
+*.temp
+remote-setup.sh
+
+# Railway/Deployment specific
+railway.json
+Dockerfile.railway
+
+# IDE specific
+.vscode/
+.idea/
+*.sublime-*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*

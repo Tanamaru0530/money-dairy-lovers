@@ -59,3 +59,63 @@ export interface LoveMemory {
   photos?: string[];
   created_at: string;
 }
+
+export interface LoveGoalBase {
+  name: string;
+  amount: number;
+  period: 'monthly' | 'yearly' | 'custom';
+  startDate: string;
+  endDate?: string;
+  description?: string;
+  categoryId?: string;
+}
+
+export interface LoveGoalCreate extends LoveGoalBase {}
+
+export interface LoveGoalUpdate {
+  name?: string;
+  amount?: number;
+  endDate?: string;
+  description?: string;
+  isActive?: boolean;
+}
+
+export interface LoveGoal extends LoveGoalBase {
+  id: string;
+  userId: string;
+  partnershipId?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LoveGoalWithProgress extends LoveGoal {
+  spentAmount: number;
+  progressPercentage: number;
+  remainingAmount: number;
+  daysRemaining?: number;
+  isAchieved: boolean;
+  transactionCount: number;
+}
+
+export interface LoveStats {
+  totalLoveTransactions: number;
+  averageLoveRating: number;
+  totalLoveSpending: number;
+  loveSpendingPercentage: number;
+  mostLoveDay?: string;
+  mostLoveCategory?: string;
+  loveStreak: number;
+  loveEventsCount: number;
+  upcomingEventsCount: number;
+}
+
+export interface LoveEventCreate {
+  eventType: 'anniversary' | 'birthday' | 'valentine' | 'christmas' | 'custom';
+  name: string;
+  eventDate: string;
+  isRecurring: boolean;
+  recurrenceType?: 'yearly' | 'monthly' | 'custom';
+  description?: string;
+  reminderDays: number;
+}

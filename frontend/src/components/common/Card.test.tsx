@@ -15,7 +15,7 @@ describe('Card Component', () => {
   it('renders with CardHeader component', () => {
     render(
       <Card>
-        <CardHeader title="Card Title" />
+        <CardHeader title="Card Title">{null}</CardHeader>
         <CardContent>Content</CardContent>
       </Card>
     );
@@ -25,7 +25,7 @@ describe('Card Component', () => {
   it('renders with CardHeader subtitle', () => {
     render(
       <Card>
-        <CardHeader title="Title" subtitle="Subtitle" />
+        <CardHeader title="Title" subtitle="Subtitle">{null}</CardHeader>
         <CardContent>Content</CardContent>
       </Card>
     );
@@ -44,23 +44,23 @@ describe('Card Component', () => {
 
   it('applies variant classes', () => {
     const { rerender, container } = render(<Card variant="default">Content</Card>);
-    const card = container.firstChild;
+    const card = container.firstChild as HTMLElement;
     expect(card?.className).toMatch(/card/);
     expect(card?.className).toMatch(/card--default/);
 
     rerender(<Card variant="love">Content</Card>);
-    expect(container.firstChild?.className).toMatch(/card--love/);
+    expect((container.firstChild as HTMLElement)?.className).toMatch(/card--love/);
 
     rerender(<Card variant="couple">Content</Card>);
-    expect(container.firstChild?.className).toMatch(/card--couple/);
+    expect((container.firstChild as HTMLElement)?.className).toMatch(/card--couple/);
 
     rerender(<Card variant="special">Content</Card>);
-    expect(container.firstChild?.className).toMatch(/card--special/);
+    expect((container.firstChild as HTMLElement)?.className).toMatch(/card--special/);
   });
 
   it('applies additional className', () => {
     const { container } = render(<Card className="custom-class">Content</Card>);
-    expect(container.firstChild?.className).toMatch(/card/);
+    expect((container.firstChild as HTMLElement)?.className).toMatch(/card/);
     expect(container.firstChild).toHaveClass('custom-class');
   });
 
@@ -68,7 +68,7 @@ describe('Card Component', () => {
     const actions = <button>Action</button>;
     render(
       <Card>
-        <CardHeader title="Title" action={actions} />
+        <CardHeader title="Title" action={actions}>{null}</CardHeader>
         <CardContent>Content</CardContent>
       </Card>
     );
@@ -78,13 +78,13 @@ describe('Card Component', () => {
 
   it('applies padding variants', () => {
     const { rerender, container } = render(<Card padding="medium">Content</Card>);
-    expect(container.firstChild?.className).toMatch(/card--padding-medium/);
+    expect((container.firstChild as HTMLElement)?.className).toMatch(/card--padding-medium/);
 
     rerender(<Card padding="small">Content</Card>);
-    expect(container.firstChild?.className).toMatch(/card--padding-small/);
+    expect((container.firstChild as HTMLElement)?.className).toMatch(/card--padding-small/);
 
     rerender(<Card padding="none">Content</Card>);
-    expect(container.firstChild?.className).toMatch(/card--padding-none/);
+    expect((container.firstChild as HTMLElement)?.className).toMatch(/card--padding-none/);
   });
 
   it.skip('renders as different HTML element', () => {
@@ -103,12 +103,12 @@ describe('Card Component', () => {
   it('renders love variant with special styling', () => {
     const { container } = render(
       <Card variant="love">
-        <CardHeader title="Love Card" variant="love" />
+        <CardHeader title="Love Card" variant="love">{null}</CardHeader>
         <CardContent>Love content</CardContent>
       </Card>
     );
     
-    expect(container.firstChild?.className).toMatch(/card--love/);
+    expect((container.firstChild as HTMLElement)?.className).toMatch(/card--love/);
   });
 
   it.skip('renders with icon in header', () => {
@@ -124,7 +124,7 @@ describe('Card Component', () => {
 
   it('applies hover effect class', () => {
     const { container } = render(<Card hoverable>Content</Card>);
-    expect(container.firstChild?.className).toMatch(/card--clickable/);
+    expect((container.firstChild as HTMLElement)?.className).toMatch(/card--clickable/);
   });
 
   it.skip('renders error state', () => {

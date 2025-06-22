@@ -346,6 +346,11 @@
       border: 2px solid $love-gold;
     }
 
+    &.specialGoal {
+      background: linear-gradient(135deg, white, #fef3c7);
+      border: 2px solid $love-gold;
+    }
+
     .goalName {
       font-weight: $font-medium;
       color: $gray-700;

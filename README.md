@@ -1,194 +1,214 @@
-# Money Dairy Lovers 💕
+# 💕 Money Dairy Lovers - カップル向け家計簿アプリ
 
-カップル向け家計簿アプリケーション - 愛を育む家計管理ツール
+カップルで一緒に家計管理を楽しむための愛にあふれたWebアプリケーション。
 
-## 概要
+![Love Theme](https://img.shields.io/badge/Love-Theme-ff69b4)
+![React](https://img.shields.io/badge/React-19-61dafb)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ed)
 
-Money Dairy Loversは、カップルが共同で家計管理を行うためのWebアプリケーションです。個人の支出管理と共有支出の管理を効率的に行い、お金に関する透明性とコミュニケーションを向上させます。
+## 🌟 特徴
 
-## 主な機能
+### 💑 カップル向け機能
+- **Love Goals**: 二人の目標設定と達成管理
+- **共有支出管理**: デート代や生活費の分担を簡単に
+- **Love Analytics**: 愛の支出分析とレポート
+- **記念日管理**: 大切な日を忘れない
 
-- 👥 **カップル連携** - パートナーとアカウントを連携して共同管理
-- 💰 **支出・収入管理** - 個人/共有の収支を記録・管理
-- 📊 **分析・レポート** - 支出傾向の可視化と分析
-- 💕 **Love機能** - デート代やプレゼント代など特別な支出カテゴリ
-- 🎯 **予算管理** - カテゴリ別・全体の予算設定と追跡
-- 📱 **レスポンシブデザイン** - スマートフォン・タブレット・PC対応
+### 📊 基本機能
+- 収支の記録・管理
+- カテゴリ別支出分析
+- 月次・年次レポート
+- 予算設定とアラート
+- 定期取引の自動登録
 
-## 技術スタック
+### 🎨 Love-themed デザイン
+- 愛らしいピンク系のカラースキーム
+- ハートやカップルをモチーフにしたUI
+- 使うたびに幸せになるデザイン
 
-### Frontend
-- **React 19** - 最新のReactでモダンなUI構築
-- **TypeScript** - 型安全な開発
-- **Vite** - 高速な開発環境
-- **SCSS Modules** - コンポーネントスコープのスタイリング
-
-### Backend
-- **FastAPI** - 高速で現代的なPython APIフレームワーク
-- **Python 3.12** - 最新のPython
-- **SQLAlchemy** - パワフルなORM
-- **Alembic** - データベースマイグレーション
-- **PostgreSQL 15** - 信頼性の高いリレーショナルデータベース
-
-### Infrastructure
-- **Docker** - コンテナ化された開発・本番環境
-- **Docker Compose** - マルチコンテナアプリケーション管理
-- **GitHub Actions** - CI/CDパイプライン
-
-## 開発環境セットアップ
+## 🚀 クイックスタート
 
 ### 前提条件
 - Docker Desktop
 - Git
-- お好みのコードエディタ（VS Code推奨）
+- Node.js 18+ (開発時)
+- Python 3.11+ (開発時)
 
-### セットアップ手順
+### インストール
 
-1. **リポジトリのクローン**
+1. リポジトリのクローン
 ```bash
 git clone https://github.com/yourusername/money-dairy-lovers.git
 cd money-dairy-lovers
 ```
 
-2. **環境変数の設定**
+2. 環境変数の設定
 ```bash
 cp .env.example .env
-# .envファイルを編集して必要な値を設定
+# .env ファイルを編集して必要な設定を行う
 ```
 
-3. **Dockerコンテナの起動**
+3. Dockerコンテナの起動
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
-4. **データベースマイグレーション**
+4. データベースのセットアップ
 ```bash
-docker-compose exec backend alembic upgrade head
+# マイグレーション実行
+docker compose exec backend alembic upgrade heads
+
+# 初期データ投入
+docker compose exec backend python -m scripts.seed_categories
 ```
 
-5. **アプリケーションへのアクセス**
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Documentation: http://localhost:8000/docs
-
-### 開発コマンド
-
-**Frontend開発**
-```bash
-# コンテナに入る
-docker-compose exec frontend sh
-
-# 依存関係のインストール
-npm install
-
-# 開発サーバー起動（ホットリロード対応）
-npm run dev
-
-# テスト実行
-npm test
-
-# ビルド
-npm run build
+5. アプリケーションにアクセス
+```
+http://localhost:3000
 ```
 
-**Backend開発**
-```bash
-# コンテナに入る
-docker-compose exec backend bash
+## 📚 ドキュメント
 
-# 依存関係のインストール
+- [デプロイメントガイド](DEPLOYMENT_GUIDE.md) - Ubuntu環境での本番デプロイ手順
+- [要件定義書](CLAUDE.md) - 詳細な機能仕様とシステム設計
+
+## 🛠️ 技術スタック
+
+### フロントエンド
+- **React 19**: 最新の React with TypeScript
+- **Vite**: 高速な開発環境
+- **SCSS Modules**: コンポーネントスコープのスタイリング
+- **Chart.js**: 美しいグラフ表示
+- **React Hook Form**: フォーム管理
+
+### バックエンド
+- **FastAPI**: 高性能な Python Web フレームワーク
+- **SQLAlchemy**: ORM
+- **Alembic**: データベースマイグレーション
+- **JWT**: セキュアな認証
+- **Pydantic**: データバリデーション
+
+### インフラ
+- **PostgreSQL 15**: メインデータベース
+- **Redis**: キャッシュとセッション管理
+- **Docker**: コンテナ化
+- **Nginx**: リバースプロキシ（本番環境）
+
+## 💻 開発
+
+### 開発環境のセットアップ
+
+```bash
+# バックエンドの依存関係インストール
+cd backend
 pip install -r requirements.txt
 
-# 開発サーバー起動（ホットリロード対応）
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# テスト実行
-pytest
-
-# マイグレーション作成
-alembic revision --autogenerate -m "migration message"
-
-# マイグレーション実行
-alembic upgrade head
+# フロントエンドの依存関係インストール
+cd ../frontend
+npm install
 ```
 
-## プロジェクト構造
+### 開発サーバーの起動
+
+```bash
+# Docker を使用
+docker compose up
+
+# または個別に起動
+# バックエンド
+cd backend
+uvicorn app.main:app --reload
+
+# フロントエンド
+cd frontend
+npm run dev
+```
+
+### テストの実行
+
+```bash
+# バックエンドテスト
+cd backend
+pytest
+
+# フロントエンドテスト
+cd frontend
+npm test
+```
+
+## 📧 メール設定
+
+Gmail を使用する場合の設定手順：
+
+1. [2段階認証を有効化](https://myaccount.google.com/security)
+2. [アプリパスワードを生成](https://myaccount.google.com/apppasswords)
+3. `.env` ファイルに設定を追加
+
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+```
+
+## 🏗️ プロジェクト構造
 
 ```
 money-dairy-lovers/
-├── frontend/               # Reactアプリケーション
+├── frontend/               # React 19 アプリケーション
 │   ├── src/
 │   │   ├── components/    # 再利用可能なコンポーネント
 │   │   ├── pages/         # ページコンポーネント
 │   │   ├── services/      # API通信
-│   │   ├── store/         # 状態管理
-│   │   ├── styles/        # グローバルスタイル
+│   │   ├── store/         # 状態管理 (Context API)
+│   │   ├── styles/        # SCSS スタイル
 │   │   └── types/         # TypeScript型定義
-│   ├── public/
-│   ├── package.json
 │   └── Dockerfile
 ├── backend/               # FastAPI アプリケーション
 │   ├── app/
 │   │   ├── api/          # APIエンドポイント
 │   │   ├── core/         # 設定・セキュリティ
-│   │   ├── db/           # データベース関連
 │   │   ├── models/       # SQLAlchemyモデル
 │   │   ├── schemas/      # Pydanticスキーマ
 │   │   └── services/     # ビジネスロジック
 │   ├── alembic/          # マイグレーション
-│   ├── tests/
-│   ├── requirements.txt
 │   └── Dockerfile
-├── docker-compose.yml    # Docker設定
-├── .github/workflows/    # CI/CD設定
-├── docs/                 # ドキュメント
-└── README.md
+├── deploy/               # デプロイメント関連
+│   ├── ubuntu-setup.sh   # Ubuntu環境セットアップ
+│   └── ubuntu-deploy.sh  # デプロイスクリプト
+└── docker-compose.yml    # Docker設定
 ```
 
-## 開発ガイドライン
+## 🔒 セキュリティ
 
-### コード規約
-- **Frontend**: ESLint + Prettier設定に従う
-- **Backend**: Black + isort + mypy使用
-- **コミット**: Conventional Commits形式
+- すべての通信は HTTPS（本番環境）
+- パスワードは bcrypt でハッシュ化
+- JWT によるステートレス認証
+- CORS 設定による適切なアクセス制御
+- SQL インジェクション対策済み
 
-### ブランチ戦略
-- `main`: 本番環境
-- `develop`: 開発環境
-- `feature/*`: 機能開発
-- `hotfix/*`: 緊急修正
+## 🤝 コントリビューション
 
-## テスト
+プルリクエストを歓迎します！大きな変更の場合は、まず Issue を作成して変更内容を議論してください。
 
-```bash
-# Frontend テスト
-docker-compose exec frontend npm test
+1. Fork する
+2. Feature ブランチを作成 (`git checkout -b feature/AmazingFeature`)
+3. 変更をコミット (`git commit -m 'Add some AmazingFeature'`)
+4. ブランチにプッシュ (`git push origin feature/AmazingFeature`)
+5. Pull Request を作成
 
-# Backend テスト
-docker-compose exec backend pytest
+## 📄 ライセンス
 
-# E2Eテスト
-docker-compose exec frontend npm run test:e2e
-```
+このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
 
-## デプロイ
+## 💖 謝辞
 
-GitHub Actionsによる自動デプロイが設定されています。
-- `develop`ブランチへのプッシュ → ステージング環境
-- `main`ブランチへのプッシュ → 本番環境
+- すべての愛するカップルたちへ
+- オープンソースコミュニティへの感謝
+- 素晴らしいライブラリとツールの作者たち
 
-## ライセンス
+---
 
-MIT License
-
-## コントリビューション
-
-プルリクエスト歓迎です！以下の手順でお願いします：
-1. Issueを作成
-2. Featureブランチを作成
-3. コミット
-4. プルリクエスト作成
-
-## サポート
-
-問題や質問がある場合は、GitHubのIssueを作成してください。
+Made with 💕 by Money Dairy Lovers Team

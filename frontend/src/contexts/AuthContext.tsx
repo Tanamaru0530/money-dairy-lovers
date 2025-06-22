@@ -84,15 +84,45 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [])
 
+  const updateUserFromTokenRefresh = useCallback((userData: any) => {
+    // トークンリフレッシュ後のユーザー情報更新
+    if (userData) {
+      setState(prev => ({ ...prev, user: userData }))
+    }
+  }, [])
+
   useEffect(() => {
     loadUser()
-  }, [loadUser])
+    
+    // グローバルにupdateUserFromTokenRefreshを公開（トークンリフレッシュ時に使用）
+    if (typeof window !== 'undefined') {
+      (window as any).__updateUserFromTokenRefresh = updateUserFromTokenRefresh
+    }
+    
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete (window as any).__updateUserFromTokenRefresh
+      }
+    }
+  }, [loadUser, updateUserFromTokenRefresh])
 
   const login = async (data: LoginRequest) => {
     setState(prev => ({ ...prev, isLoading: true }))
     try {
-      await authService.login(data)
-      const user = await authService.getCurrentUser()
+      const response = await authService.login(data)
+      
+      // ログインレスポンスからユーザー情報を取得
+      const user = response.user
+      
+      // 開発環境でのみユーザー情報を確認
+      if (import.meta.env.DEV) {
+        console.log('AuthContext - Login response user:', {
+          id: user?.id,
+          displayName: user?.displayName || user?.display_name,
+          email: user?.email ? `${user.email.charAt(0)}***@${user.email.split('@')[1]}` : undefined
+        });
+      }
+      
       setState({
         user,
         isAuthenticated: true,

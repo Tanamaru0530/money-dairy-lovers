@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Transaction } from '../../types/transaction';
 import { formatDate, formatNumber } from '../../utils/format';
+import { useSwipe } from '../../hooks/useSwipe';
 import styles from './TransactionCard.module.scss';
 
 interface TransactionCardProps {
@@ -14,13 +15,44 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [showActions, setShowActions] = useState(false);
+
+  const { ref, swipeState } = useSwipe({
+    onSwiping: (deltaX) => {
+      // 左スワイプでアクションを表示
+      if (deltaX < 0) {
+        setSwipeOffset(Math.max(deltaX, -150));
+      }
+    },
+    onSwipeLeft: () => {
+      setShowActions(true);
+      setSwipeOffset(-150);
+    },
+    onSwipeRight: () => {
+      setShowActions(false);
+      setSwipeOffset(0);
+    },
+    onSwipeEnd: () => {
+      if (swipeOffset > -75) {
+        setShowActions(false);
+        setSwipeOffset(0);
+      } else {
+        setShowActions(true);
+        setSwipeOffset(-150);
+      }
+    },
+  }, {
+    threshold: 30,
+  });
+
   const formatAmount = (amount: number) => {
     return formatNumber(Math.floor(amount));
   };
 
   const getAmountClassName = () => {
     if (transaction.transaction_type === 'income' || transaction.transactionType === 'income') return styles.amountIncome;
-    if (transaction.category?.is_love_category || transaction.category?.isLoveCategory) return styles.amountLove;
+    if (transaction.category?.is_love_category) return styles.amountLove;
     return styles.amountExpense;
   };
 
@@ -54,8 +86,13 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   };
 
   return (
-    <div className={`${styles.transactionCard} ${(transaction.category?.is_love_category || transaction.category?.isLoveCategory) ? styles.loveCard : ''}`}>
-      <div className={styles.transactionHeader}>
+    <div className={styles.transactionCardWrapper}>
+      <div 
+        ref={ref as any}
+        className={`${styles.transactionCard} ${transaction.category?.is_love_category ? styles.loveCard : ''} ${swipeState.isSwiping ? styles.swiping : ''}`}
+        style={{ transform: `translateX(${swipeOffset}px)` }}
+      >
+        <div className={styles.transactionHeader}>
         <div className={styles.transactionCategory}>
           <span className={styles.categoryIcon}>{transaction.category?.icon || '💰'}</span>
           <span className={styles.categoryName}>{transaction.category?.name || 'その他'}</span>
@@ -106,13 +143,13 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
                 {transaction.payer?.display_name || 'あなた'}
               </span>
             </div>
-            {transaction.shared_transaction.split_type === 'equal' && (
+            {transaction.shared_transaction?.split_type === 'equal' && (
               <div className={styles.sharedDetails}>
                 <span className={styles.sharedLabel}>分割:</span>
                 <span className={styles.sharedValue}>均等割り</span>
               </div>
             )}
-            {transaction.shared_transaction.notes && (
+            {transaction.shared_transaction?.notes && (
               <div className={styles.sharedNotes}>
                 💬 {transaction.shared_transaction.notes}
               </div>
@@ -139,21 +176,44 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         )}
       </div>
 
-      <div className={styles.transactionActions}>
+        <div className={styles.transactionActions}>
+          {onEdit && (
+            <button
+              onClick={handleEdit}
+              className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+            >
+              編集
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={handleDelete}
+              className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+            >
+              削除
+            </button>
+          )}
+        </div>
+      </div>
+      
+      {/* スワイプ時に表示されるアクションボタン */}
+      <div className={`${styles.swipeActions} ${showActions ? styles.visible : ''}`}>
         {onEdit && (
           <button
             onClick={handleEdit}
-            className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+            className={`${styles.swipeAction} ${styles.swipeActionEdit}`}
           >
-            編集
+            <span className={styles.swipeActionIcon}>✏️</span>
+            <span className={styles.swipeActionText}>編集</span>
           </button>
         )}
         {onDelete && (
           <button
             onClick={handleDelete}
-            className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+            className={`${styles.swipeAction} ${styles.swipeActionDelete}`}
           >
-            削除
+            <span className={styles.swipeActionIcon}>🗑️</span>
+            <span className={styles.swipeActionText}>削除</span>
           </button>
         )}
       </div>

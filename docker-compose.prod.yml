@@ -6,12 +6,13 @@ services:
       dockerfile: Dockerfile
       target: production
     ports:
-      - "80:80"
+      - "3000:80"
     environment:
-      - VITE_API_URL=${VITE_API_URL:-https://api.money-dairy-lovers.com}
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
       - VITE_ENVIRONMENT=production
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - money-dairy-lovers
     restart: always
@@ -36,9 +37,14 @@ services:
       - REDIS_URL=${REDIS_URL}
       - ENVIRONMENT=production
       - PYTHONUNBUFFERED=1
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - money-dairy-lovers
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -50,6 +56,30 @@ services:
       options:
         max-size: "50m"
         max-file: "10"
+
+  db:
+    container_name: money-dairy-lovers-db-prod
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init-prod.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - money-dairy-lovers
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
     
   redis:
     container_name: money-dairy-lovers-redis-prod
@@ -72,6 +102,8 @@ services:
         max-file: "5"
 
 volumes:
+  postgres_data:
+    driver: local
   redis_data:
     driver: local
 

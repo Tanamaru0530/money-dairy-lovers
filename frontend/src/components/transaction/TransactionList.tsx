@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Transaction, PaginatedTransactions } from '../../types/transaction';
 import { TransactionCard } from './TransactionCard';
+import { SkeletonTransactionList } from '../common/Skeleton';
 import styles from './TransactionList.module.scss';
 
 interface TransactionListProps {
@@ -18,6 +19,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
 }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +85,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
       console.error('Failed to load transactions:', err);
     } finally {
       setIsLoading(false);
+      setIsInitialLoading(false);
     }
   };
 
@@ -90,6 +93,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
     setPage(1);
     setTransactions([]);
     setHasMore(true);
+    setIsInitialLoading(true);
   };
 
   const groupTransactionsByDate = (transactions: Transaction[]) => {
@@ -153,6 +157,10 @@ export const TransactionList: React.FC<TransactionListProps> = ({
     );
   }
 
+  if (isInitialLoading) {
+    return <SkeletonTransactionList count={10} />;
+  }
+
   if (!isLoading && transactions.length === 0) {
     return (
       <div className={styles.emptyContainer}>
@@ -196,13 +204,8 @@ export const TransactionList: React.FC<TransactionListProps> = ({
         </div>
       ))}
       
-      {isLoading && (
-        <div className={styles.loadingContainer}>
-          <div className={styles.loadingSpinner}>
-            <div className={styles.spinner}></div>
-            <p>読み込み中...</p>
-          </div>
-        </div>
+      {isLoading && !isInitialLoading && (
+        <SkeletonTransactionList count={3} />
       )}
       
       {!hasMore && transactions.length > 0 && (

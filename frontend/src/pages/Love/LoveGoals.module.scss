@@ -1,0 +1,325 @@
+@import '@/styles/variables';
+
+.loveGoals {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-6;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-8;
+  
+  @media (max-width: $breakpoint-sm) {
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+}
+
+.titleSection {
+  .title {
+    font-size: $text-3xl;
+    font-weight: $font-bold;
+    color: $primary-600;
+    margin-bottom: $spacing-2;
+    font-family: $font-love;
+  }
+  
+  .subtitle {
+    font-size: $text-lg;
+    color: $gray-600;
+  }
+}
+
+.createButton {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  
+  .buttonIcon {
+    font-size: $text-xl;
+  }
+}
+
+// Empty state
+.emptyState {
+  background: linear-gradient(135deg, $primary-50, white);
+  border: 2px dashed $primary-300;
+  border-radius: $radius-love;
+  padding: $spacing-12;
+  text-align: center;
+  
+  .emptyIcon {
+    font-size: 5rem;
+    margin-bottom: $spacing-4;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  h2 {
+    font-size: $text-2xl;
+    font-weight: $font-semibold;
+    color: $gray-800;
+    margin-bottom: $spacing-2;
+  }
+  
+  p {
+    font-size: $text-lg;
+    color: $gray-600;
+    margin-bottom: $spacing-6;
+  }
+  
+  .emptyButton {
+    font-size: $text-lg;
+    padding: $spacing-4 $spacing-8;
+  }
+}
+
+// Goals list
+.goalsList {
+  display: grid;
+  gap: $spacing-6;
+}
+
+.goalCard {
+  background: white;
+  border-radius: $radius-love;
+  box-shadow: $shadow-md;
+  padding: $spacing-6;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-love;
+  }
+  
+  &.warning {
+    border-color: $warning;
+    background: linear-gradient(135deg, white, #fef3c7);
+  }
+  
+  &.achieved {
+    border-color: $success;
+    background: linear-gradient(135deg, white, #d1fae5);
+  }
+}
+
+.goalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-4;
+}
+
+.goalName {
+  font-size: $text-xl;
+  font-weight: $font-semibold;
+  color: $gray-900;
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.achievedBadge {
+  font-size: $text-base;
+  color: $success;
+}
+
+.goalActions {
+  display: flex;
+  gap: $spacing-2;
+  
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: $text-lg;
+    padding: $spacing-1;
+    border-radius: $radius-md;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: $gray-100;
+    }
+  }
+  
+  .editButton:hover {
+    background: $primary-100;
+  }
+  
+  .deleteButton:hover {
+    background: $error-100;
+  }
+}
+
+// Progress section
+.goalProgress {
+  margin-bottom: $spacing-4;
+}
+
+.progressBar {
+  width: 100%;
+  height: 12px;
+  background: $gray-200;
+  border-radius: $radius-full;
+  overflow: hidden;
+  margin-bottom: $spacing-2;
+}
+
+.progressFill {
+  height: 100%;
+  background: $gradient-love;
+  border-radius: $radius-full;
+  transition: width 0.5s ease;
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progressText {
+  font-family: $font-mono;
+  font-weight: $font-medium;
+  color: $gray-700;
+}
+
+.progressPercentage {
+  font-weight: $font-bold;
+  color: $primary-600;
+}
+
+// Meta information
+.goalMeta {
+  display: flex;
+  gap: $spacing-4;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: $text-sm;
+  color: $gray-600;
+  
+  .metaIcon {
+    font-size: $text-base;
+  }
+}
+
+// Modal styles
+.modalContent {
+  padding: $spacing-4;
+}
+
+.formGroup {
+  margin-bottom: $spacing-4;
+  
+  .label {
+    display: block;
+    font-weight: $font-medium;
+    color: $gray-700;
+    margin-bottom: $spacing-2;
+    
+    .required {
+      color: $error;
+    }
+  }
+  
+  .input,
+  .select {
+    width: 100%;
+    padding: $spacing-3;
+    border: 2px solid $gray-300;
+    border-radius: $radius-md;
+    font-size: $text-base;
+    transition: all 0.2s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-500;
+      box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+    }
+  }
+  
+  .select {
+    cursor: pointer;
+  }
+}
+
+.modalActions {
+  display: flex;
+  gap: $spacing-3;
+  justify-content: flex-end;
+  margin-top: $spacing-6;
+}
+
+// Animations
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+// Responsive
+@media (max-width: $breakpoint-sm) {
+  .loveGoals {
+    padding: $spacing-4;
+  }
+  
+  .header {
+    .title {
+      font-size: $text-2xl;
+    }
+    
+    .subtitle {
+      font-size: $text-base;
+    }
+  }
+  
+  .goalCard {
+    padding: $spacing-4;
+  }
+  
+  .goalName {
+    font-size: $text-lg;
+  }
+  
+  .goalActions {
+    button {
+      font-size: $text-base;
+    }
+  }
+  
+  .emptyState {
+    padding: $spacing-8;
+    
+    .emptyIcon {
+      font-size: 4rem;
+    }
+    
+    h2 {
+      font-size: $text-xl;
+    }
+    
+    p {
+      font-size: $text-base;
+    }
+  }
+}

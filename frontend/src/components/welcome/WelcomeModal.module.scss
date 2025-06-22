@@ -1,0 +1,100 @@
+@import '@/styles/variables';
+
+.welcomeContent {
+  text-align: center;
+  padding: $spacing-6;
+}
+
+.welcomeIcon {
+  font-size: 4rem;
+  margin-bottom: $spacing-4;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.welcomeTitle {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $primary-600;
+  margin-bottom: $spacing-3;
+  font-family: $font-love;
+}
+
+.welcomeMessage {
+  font-size: $text-lg;
+  color: $gray-700;
+  margin-bottom: $spacing-6;
+  line-height: $leading-relaxed;
+}
+
+.featureList {
+  background: $primary-50;
+  border-radius: $radius-love;
+  padding: $spacing-4;
+  margin-bottom: $spacing-6;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-2 0;
+  text-align: left;
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid $primary-100;
+  }
+}
+
+.featureIcon {
+  font-size: $text-xl;
+  flex-shrink: 0;
+}
+
+.featureText {
+  font-size: $text-base;
+  color: $gray-700;
+}
+
+.welcomeActions {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  margin-bottom: $spacing-4;
+}
+
+.primaryAction {
+  font-size: $text-lg;
+  padding: $spacing-4 $spacing-6;
+}
+
+.welcomeTip {
+  font-size: $text-sm;
+  color: $gray-600;
+  background: $secondary-50;
+  padding: $spacing-3;
+  border-radius: $radius-md;
+  margin-top: $spacing-4;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .welcomeContent {
+    padding: $spacing-4;
+  }
+  
+  .welcomeIcon {
+    font-size: 3rem;
+  }
+  
+  .welcomeTitle {
+    font-size: $text-xl;
+  }
+  
+  .welcomeMessage {
+    font-size: $text-base;
+  }
+}

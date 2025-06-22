@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { api } from '../services/api';
 
-interface NotificationCounts {
+export interface NotificationCounts {
   total: number;
   unreadTransactions: number;
   upcomingEvents: number;

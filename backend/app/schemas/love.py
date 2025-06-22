@@ -136,3 +136,56 @@ class LoveMemoryResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+
+class LoveGoalBase(BaseModel):
+    """Love Goal基本スキーマ"""
+    name: str = Field(..., min_length=1, max_length=200)
+    amount: Decimal = Field(..., gt=0)
+    period: str = Field(default='monthly', pattern='^(monthly|yearly|custom)$')
+    start_date: date
+    end_date: Optional[date] = None
+    description: Optional[str] = None
+    category_id: Optional[UUID] = None  # 特定のLoveカテゴリに関連付ける場合
+    
+    @field_validator('name')
+    @classmethod
+    def validate_name(cls, v: str) -> str:
+        return v.strip()
+
+
+class LoveGoalCreate(LoveGoalBase):
+    """Love Goal作成"""
+    pass
+
+
+class LoveGoalUpdate(BaseModel):
+    """Love Goal更新"""
+    name: Optional[str] = Field(None, min_length=1, max_length=200)
+    amount: Optional[Decimal] = Field(None, gt=0)
+    end_date: Optional[date] = None
+    description: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class LoveGoal(LoveGoalBase):
+    """Love Goal情報"""
+    id: UUID
+    user_id: UUID
+    partnership_id: Optional[UUID] = None
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class LoveGoalWithProgress(LoveGoal):
+    """進捗情報付きLove Goal"""
+    spent_amount: Decimal = Field(default=Decimal('0'))
+    progress_percentage: Decimal = Field(default=Decimal('0'))
+    remaining_amount: Decimal = Field(default=Decimal('0'))
+    days_remaining: Optional[int] = None
+    is_achieved: bool = False
+    transaction_count: int = 0

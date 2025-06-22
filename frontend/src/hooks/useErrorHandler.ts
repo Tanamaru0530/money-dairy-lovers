@@ -1,10 +1,16 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import { useToastContext } from '../contexts/ToastContext';
+import { useAuth } from '../contexts/AuthContext';
+import { getErrorMessage, getErrorType, isRetryableError, getSuggestedAction } from '../utils/errorHandler';
 
 export interface ErrorState {
   message: string;
   field?: string;
   code?: string;
+  isRetryable?: boolean;
+  suggestedAction?: string | null;
 }
 
 export interface ValidationError {
@@ -12,33 +18,74 @@ export interface ValidationError {
   message: string;
 }
 
+// Type definitions for API error responses
+interface ApiErrorResponse {
+  detail?: string | ValidationErrorDetail[];
+  message?: string;
+  userMessage?: string;
+}
+
+interface ValidationErrorDetail {
+  loc: (string | number)[];
+  msg: string;
+  type: string;
+}
+
+interface ErrorHandlerOptions {
+  showToast?: boolean;
+  redirectOnAuth?: boolean;
+  onRetry?: () => void;
+  customMessage?: string;
+}
+
 export const useErrorHandler = () => {
   const [error, setError] = useState<ErrorState | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const toast = useToastContext();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const clearError = useCallback(() => {
     setError(null);
     setValidationErrors({});
   }, []);
 
-  const handleError = useCallback((error: unknown) => {
+  const handleError = useCallback((error: unknown, options: ErrorHandlerOptions = {}) => {
+    const {
+      showToast: shouldShowToast = true,
+      redirectOnAuth = true,
+      onRetry,
+      customMessage,
+    } = options;
+
+    // 統一されたエラーハンドラーを使用
+    const errorMessage = customMessage || getErrorMessage(error);
+    const errorType = getErrorType(error);
+    const retryable = isRetryableError(error);
+    const suggestedAction = getSuggestedAction(error);
+
     console.error('[useErrorHandler] Error occurred:', error);
-    
-    // AxiosErrorの判定をより確実に
+    console.log('[useErrorHandler] Error type:', errorType);
+    console.log('[useErrorHandler] Error message:', errorMessage);
+
+    // エラーステートを設定
+    setError({
+      message: errorMessage,
+      code: errorType.toUpperCase(),
+      isRetryable: retryable,
+      suggestedAction,
+    });
+
+    // AxiosErrorの場合の詳細処理
     if (error && typeof error === 'object' && 'response' in error) {
-      const axiosError = error as AxiosError;
+      const axiosError = error as AxiosError<ApiErrorResponse>;
       const response = axiosError.response;
-      console.log('[useErrorHandler] Axios error detected');
-      console.log('[useErrorHandler] Response status:', response?.status);
-      console.log('[useErrorHandler] Response data:', response?.data);
       
       if (!response) {
-        console.log('[useErrorHandler] No response - Network error');
-        setError({
-          message: 'ネットワークエラーが発生しました。接続を確認してください。',
-          code: 'NETWORK_ERROR'
-        });
+        if (shouldShowToast) {
+          toast.error(errorMessage);
+        }
         return;
       }
 
@@ -48,8 +95,8 @@ export const useErrorHandler = () => {
         
         if (Array.isArray(details)) {
           const errors: Record<string, string> = {};
-          details.forEach((err: any) => {
-            const field = err.loc?.[err.loc.length - 1] || 'general';
+          details.forEach((err) => {
+            const field = String(err.loc?.[err.loc.length - 1] || 'general');
             errors[field] = err.msg || 'バリデーションエラー';
           });
           setValidationErrors(errors);
@@ -57,7 +104,7 @@ export const useErrorHandler = () => {
             message: '入力内容に誤りがあります。',
             code: 'VALIDATION_ERROR'
           });
-        } else {
+        } else if (typeof details === 'string') {
           setError({
             message: details,
             code: 'VALIDATION_ERROR'
@@ -68,87 +115,42 @@ export const useErrorHandler = () => {
 
       // 認証エラー（401）
       if (response.status === 401) {
-        // ログインページでの401エラーは認証失敗を意味する
         const isLoginPage = window.location.pathname.includes('/auth/login');
         
-        // APIインターセプターからのユーザーフレンドリーメッセージを優先
-        const errorMessage = response.data?.userMessage || 
-          (isLoginPage 
-            ? 'メールアドレスまたはパスワードが正しくありません。' 
-            : 'ログインが必要です。');
-          
-        console.log('[useErrorHandler] Setting 401 error:', errorMessage);
-        setError({
-          message: errorMessage,
-          code: 'UNAUTHORIZED'
-        });
+        if (shouldShowToast) {
+          toast.error(errorMessage);
+        }
         
         // ログインページ以外でのみリダイレクト
-        if (!isLoginPage && !window.location.pathname.includes('/auth/')) {
-          setTimeout(() => {
-            window.location.href = '/auth/login';
-          }, 2000);
+        if (redirectOnAuth && !isLoginPage && !window.location.pathname.includes('/auth/')) {
+          logout();
+          navigate('/auth/login');
         }
         return;
       }
 
-      // 権限エラー（403）
-      if (response.status === 403) {
-        setError({
-          message: 'この操作を実行する権限がありません。',
-          code: 'FORBIDDEN'
-        });
-        return;
+      // その他のHTTPエラー
+      if (shouldShowToast) {
+        toast.error(errorMessage);
+        
+        // リトライ可能なエラーでリトライ関数がある場合
+        if (retryable && onRetry) {
+          // リトライボタンを含むトーストを表示することも可能
+          // 現在は単純にコールバックを保持
+        }
       }
-
-      // Not Found（404）
-      if (response.status === 404) {
-        setError({
-          message: '指定されたデータが見つかりません。',
-          code: 'NOT_FOUND'
-        });
-        return;
-      }
-
-      // Conflict（409）
-      if (response.status === 409) {
-        setError({
-          message: response.data?.userMessage || response.data?.detail || 'データの競合が発生しました。',
-          code: 'CONFLICT'
-        });
-        return;
-      }
-
-      // その他のサーバーエラー
-      if (response.status >= 500) {
-        setError({
-          message: 'サーバーエラーが発生しました。しばらくしてからもう一度お試しください。',
-          code: 'SERVER_ERROR'
-        });
-        return;
-      }
-
-      // デフォルトエラー
-      // APIインターセプターからのユーザーフレンドリーメッセージを優先
-      const userMessage = response.data?.userMessage || response.data?.detail || response.data?.message;
-      setError({
-        message: userMessage || 'エラーが発生しました。',
-        code: 'UNKNOWN_ERROR'
-      });
     } else if (error instanceof Error) {
       console.log('[useErrorHandler] Generic Error:', error.message);
-      setError({
-        message: error.message,
-        code: 'CLIENT_ERROR'
-      });
+      if (shouldShowToast) {
+        toast.error(errorMessage);
+      }
     } else {
       console.log('[useErrorHandler] Unknown error type:', error);
-      setError({
-        message: '予期しないエラーが発生しました。',
-        code: 'UNKNOWN_ERROR'
-      });
+      if (shouldShowToast) {
+        toast.error(errorMessage);
+      }
     }
-  }, []);
+  }, [toast, logout, navigate]);
 
   const executeAsync = useCallback(async <T,>(
     asyncFunction: () => Promise<T>,
@@ -156,6 +158,7 @@ export const useErrorHandler = () => {
       onSuccess?: (data: T) => void;
       onError?: (error: unknown) => void;
       successMessage?: string;
+      errorOptions?: ErrorHandlerOptions;
     }
   ): Promise<T | null> => {
     try {
@@ -165,6 +168,10 @@ export const useErrorHandler = () => {
       
       const result = await asyncFunction();
       
+      if (options?.successMessage) {
+        toast.success(options.successMessage);
+      }
+      
       if (options?.onSuccess) {
         options.onSuccess(result);
       }
@@ -172,7 +179,7 @@ export const useErrorHandler = () => {
       return result;
     } catch (error) {
       console.log('[useErrorHandler] Error caught:', error);
-      handleError(error);
+      handleError(error, options?.errorOptions);
       
       if (options?.onError) {
         options.onError(error);
@@ -183,7 +190,7 @@ export const useErrorHandler = () => {
       console.log('[useErrorHandler] Setting isLoading to false');
       setIsLoading(false);
     }
-  }, [clearError, handleError]);
+  }, [clearError, handleError, toast]);
 
   return {
     error,

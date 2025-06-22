@@ -22,11 +22,59 @@ from app.schemas.love import (
     LoveCalendar,
     LoveMemoryCreate,
     LoveMemoryUpdate,
-    LoveMemoryResponse
+    LoveMemoryResponse,
+    LoveGoal,
+    LoveGoalCreate,
+    LoveGoalUpdate,
+    LoveGoalWithProgress
 )
 from app.api.partnerships.partnerships import get_user_partnership
 
 router = APIRouter()
+
+
+def calculate_goal_achievement_status(db: Session, goal: models.Budget) -> bool:
+    """Love Goalが達成されているかを計算"""
+    # 期間内の支出を計算
+    query = db.query(
+        func.coalesce(func.sum(models.Transaction.amount), 0)
+    ).filter(
+        models.Transaction.user_id == goal.user_id,
+        models.Transaction.transaction_type == 'expense',
+        models.Transaction.transaction_date >= goal.start_date
+    )
+    
+    if goal.end_date:
+        query = query.filter(models.Transaction.transaction_date <= goal.end_date)
+    
+    if goal.category_id:
+        query = query.filter(models.Transaction.category_id == goal.category_id)
+    else:
+        # カテゴリ未指定の場合はLoveカテゴリのみ
+        query = query.join(models.Category).filter(models.Category.is_love_category == True)
+    
+    spent_amount = query.scalar() or 0
+    
+    # 達成判定
+    return spent_amount >= goal.amount
+
+
+def create_goal_achievement_notification(db: Session, goal: models.Budget, user: models.User):
+    """Love Goal達成時の通知を作成"""
+    notification = models.Notification(
+        user_id=user.id,
+        type='love_goal_achieved',
+        title='🎉 Love Goal達成！',
+        message=f'目標「{goal.name.split(" - ")[0] if " - " in goal.name else goal.name}」を達成しました！',
+        data={
+            'goal_id': str(goal.id),
+            'goal_name': goal.name.split(' - ')[0] if ' - ' in goal.name else goal.name,
+            'amount': float(goal.amount)
+        },
+        priority='high'
+    )
+    db.add(notification)
+    db.commit()
 
 
 def calculate_days_until(event_date: date, from_date: date = None) -> Dict[str, Any]:
@@ -759,3 +807,278 @@ def delete_love_memory(
     db.commit()
     
     return {"message": "Loveメモリーを削除しました"}
+
+
+# Love Goals エンドポイント
+@router.get("/goals", response_model=List[LoveGoalWithProgress])
+def get_love_goals(
+    *,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+    is_active: Optional[bool] = True,
+    category_id: Optional[UUID] = None
+) -> Any:
+    """
+    Love Goals一覧を取得（進捗情報付き）
+    """
+    # 基本クエリ
+    query = db.query(models.Budget).filter(
+        models.Budget.user_id == current_user.id,
+        models.Budget.is_love_budget == True
+    )
+    
+    # アクティブフィルター
+    if is_active is not None:
+        query = query.filter(models.Budget.is_active == is_active)
+    
+    # カテゴリフィルター
+    if category_id:
+        query = query.filter(models.Budget.category_id == category_id)
+    
+    goals = query.order_by(desc(models.Budget.created_at)).all()
+    
+    # 各ゴールの進捗を計算
+    result = []
+    for goal in goals:
+        # 期間内の支出を計算
+        start_date = goal.start_date
+        end_date = goal.end_date or date.today()
+        
+        # Loveカテゴリの支出を集計
+        spent_query = db.query(
+            func.coalesce(func.sum(models.Transaction.amount), 0)
+        ).join(
+            models.Category
+        ).filter(
+            models.Transaction.user_id == current_user.id,
+            models.Transaction.transaction_type == 'expense',
+            models.Transaction.transaction_date >= start_date,
+            models.Transaction.transaction_date <= end_date,
+            models.Category.is_love_category == True
+        )
+        
+        # 特定のカテゴリに限定されている場合
+        if goal.category_id:
+            spent_query = spent_query.filter(models.Transaction.category_id == goal.category_id)
+        
+        spent_amount = spent_query.scalar() or Decimal('0')
+        
+        # 取引数を取得
+        count_query = db.query(
+            func.count(models.Transaction.id)
+        ).join(
+            models.Category
+        ).filter(
+            models.Transaction.user_id == current_user.id,
+            models.Transaction.transaction_type == 'expense',
+            models.Transaction.transaction_date >= start_date,
+            models.Transaction.transaction_date <= end_date,
+            models.Category.is_love_category == True
+        )
+        
+        if goal.category_id:
+            count_query = count_query.filter(models.Transaction.category_id == goal.category_id)
+        
+        transaction_count = count_query.scalar() or 0
+        
+        # 進捗計算
+        progress_percentage = (spent_amount / goal.amount * 100) if goal.amount > 0 else Decimal('0')
+        remaining_amount = max(goal.amount - spent_amount, Decimal('0'))
+        is_achieved = spent_amount >= goal.amount
+        
+        # 残り日数計算
+        days_remaining = None
+        if goal.end_date:
+            days_remaining = (goal.end_date - date.today()).days
+            days_remaining = max(days_remaining, 0)
+        
+        # LoveGoalWithProgressオブジェクトを作成
+        goal_with_progress = LoveGoalWithProgress(
+            id=goal.id,
+            user_id=goal.user_id,
+            partnership_id=goal.partnership_id,
+            name=goal.name,
+            amount=goal.amount,
+            period=goal.period,
+            start_date=goal.start_date,
+            end_date=goal.end_date,
+            description=goal.description,
+            category_id=goal.category_id,
+            is_active=goal.is_active,
+            created_at=goal.created_at,
+            updated_at=goal.updated_at,
+            spent_amount=spent_amount,
+            progress_percentage=progress_percentage,
+            remaining_amount=remaining_amount,
+            days_remaining=days_remaining,
+            is_achieved=is_achieved,
+            transaction_count=transaction_count
+        )
+        
+        result.append(goal_with_progress)
+    
+    return result
+
+
+@router.post("/goals", response_model=LoveGoal)
+def create_love_goal(
+    *,
+    db: Session = Depends(get_db),
+    goal_in: LoveGoalCreate,
+    current_user: models.User = Depends(get_current_user)
+) -> Any:
+    """
+    Love Goalを作成
+    """
+    # パートナーシップを確認（オプション）
+    partnership = get_user_partnership(db, current_user.id)
+    
+    # Love Goal（予算）を作成
+    goal = models.Budget(
+        user_id=current_user.id,
+        partnership_id=partnership.id if partnership else None,
+        name=goal_in.name,
+        amount=goal_in.amount,
+        period=goal_in.period,
+        start_date=goal_in.start_date,
+        end_date=goal_in.end_date,
+        category_id=goal_in.category_id,
+        is_love_budget=True,  # Love Goal フラグ
+        is_active=True,
+        alert_threshold=80.0  # デフォルトアラート閾値
+    )
+    
+    # 説明があれば名前に含める（Budgetモデルにdescriptionフィールドがないため）
+    if goal_in.description:
+        goal.name = f"{goal_in.name} - {goal_in.description}"
+    
+    db.add(goal)
+    db.commit()
+    db.refresh(goal)
+    
+    # LoveGoalスキーマに変換して返す
+    return LoveGoal(
+        id=goal.id,
+        user_id=goal.user_id,
+        partnership_id=goal.partnership_id,
+        name=goal.name.split(' - ')[0] if ' - ' in goal.name else goal.name,
+        amount=goal.amount,
+        period=goal.period,
+        start_date=goal.start_date,
+        end_date=goal.end_date,
+        description=goal.name.split(' - ', 1)[1] if ' - ' in goal.name else None,
+        category_id=goal.category_id,
+        is_active=goal.is_active,
+        created_at=goal.created_at,
+        updated_at=goal.updated_at
+    )
+
+
+@router.put("/goals/{goal_id}", response_model=LoveGoal)
+def update_love_goal(
+    *,
+    db: Session = Depends(get_db),
+    goal_id: UUID,
+    goal_update: LoveGoalUpdate,
+    current_user: models.User = Depends(get_current_user)
+) -> Any:
+    """
+    Love Goalを更新
+    """
+    # ゴールを取得
+    goal = db.query(models.Budget).filter(
+        models.Budget.id == goal_id,
+        models.Budget.user_id == current_user.id,
+        models.Budget.is_love_budget == True
+    ).first()
+    
+    if not goal:
+        raise HTTPException(
+            status_code=404,
+            detail="Love goal not found"
+        )
+    
+    # 更新
+    update_data = goal_update.dict(exclude_unset=True)
+    
+    # nameとdescriptionの処理
+    if 'name' in update_data or 'description' in update_data:
+        current_name = goal.name.split(' - ')[0] if ' - ' in goal.name else goal.name
+        current_desc = goal.name.split(' - ', 1)[1] if ' - ' in goal.name else None
+        
+        new_name = update_data.get('name', current_name)
+        new_desc = update_data.get('description', current_desc)
+        
+        if new_desc:
+            goal.name = f"{new_name} - {new_desc}"
+        else:
+            goal.name = new_name
+        
+        # これらは既に処理したので削除
+        update_data.pop('name', None)
+        update_data.pop('description', None)
+    
+    # 更新前の達成状態を保存
+    was_achieved = calculate_goal_achievement_status(db, goal)
+    
+    # その他のフィールドを更新
+    for field, value in update_data.items():
+        if hasattr(goal, field):
+            setattr(goal, field, value)
+    
+    db.commit()
+    db.refresh(goal)
+    
+    # 達成状態を再計算
+    is_achieved = calculate_goal_achievement_status(db, goal)
+    
+    # 新たに達成した場合は通知を作成
+    if not was_achieved and is_achieved:
+        create_goal_achievement_notification(db, goal, current_user)
+    
+    # LoveGoalスキーマに変換して返す
+    return LoveGoal(
+        id=goal.id,
+        user_id=goal.user_id,
+        partnership_id=goal.partnership_id,
+        name=goal.name.split(' - ')[0] if ' - ' in goal.name else goal.name,
+        amount=goal.amount,
+        period=goal.period,
+        start_date=goal.start_date,
+        end_date=goal.end_date,
+        description=goal.name.split(' - ', 1)[1] if ' - ' in goal.name else None,
+        category_id=goal.category_id,
+        is_active=goal.is_active,
+        created_at=goal.created_at,
+        updated_at=goal.updated_at
+    )
+
+
+@router.delete("/goals/{goal_id}")
+def delete_love_goal(
+    *,
+    db: Session = Depends(get_db),
+    goal_id: UUID,
+    current_user: models.User = Depends(get_current_user)
+) -> Any:
+    """
+    Love Goalを削除（非アクティブ化）
+    """
+    # ゴールを取得
+    goal = db.query(models.Budget).filter(
+        models.Budget.id == goal_id,
+        models.Budget.user_id == current_user.id,
+        models.Budget.is_love_budget == True
+    ).first()
+    
+    if not goal:
+        raise HTTPException(
+            status_code=404,
+            detail="Love goal not found"
+        )
+    
+    # 非アクティブ化
+    goal.is_active = False
+    db.commit()
+    
+    return {"message": "Love goalを削除しました"}

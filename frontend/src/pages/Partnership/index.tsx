@@ -23,11 +23,11 @@ export const Partnership: React.FC = () => {
       setIsLoading(true);
       const data = await partnershipService.getStatus();
       setStatus(data);
-      if (data.partnership?.love_anniversary) {
-        setAnniversaryDate(data.partnership.love_anniversary);
+      if (data.partnership?.loveAnniversary) {
+        setAnniversaryDate(data.partnership.loveAnniversary);
       }
-      if (data.partnership?.relationship_type) {
-        setRelationshipType(data.partnership.relationship_type);
+      if (data.partnership?.relationshipType) {
+        setRelationshipType(data.partnership.relationshipType);
       }
     } catch (error) {
       console.error('Failed to load partnership status:', error);
@@ -42,7 +42,7 @@ export const Partnership: React.FC = () => {
       setError(null);
       setSuccess(null);
       const response = await partnershipService.createInvitation();
-      setInviteCode(response.invitation_code);
+      setInviteCode(response.invitationCode);
       setSuccess('招待コードを作成しました！パートナーに共有してください💕');
     } catch (error: any) {
       setError(error.response?.data?.detail || '招待コードの作成に失敗しました');
@@ -139,7 +139,7 @@ export const Partnership: React.FC = () => {
         )}
 
         <div className={styles.contentGrid}>
-          {status?.has_partner ? (
+          {status?.hasPartner ? (
             // パートナーがいる場合
             <>
               <div className={styles.partnerCard}>
@@ -149,10 +149,10 @@ export const Partnership: React.FC = () => {
                 </h2>
                 <div className={styles.partnerInfo}>
                   <div className={styles.partnerAvatar}>
-                    {status.partnership?.partner.profile_image_url ? (
+                    {status.partnership?.partner.profileImageUrl ? (
                       <img 
-                        src={status.partnership.partner.profile_image_url} 
-                        alt={status.partnership.partner.display_name} 
+                        src={status.partnership.partner.profileImageUrl} 
+                        alt={status.partnership.partner.displayName} 
                       />
                     ) : (
                       <div className={styles.avatarPlaceholder}>👤</div>
@@ -160,14 +160,14 @@ export const Partnership: React.FC = () => {
                   </div>
                   <div className={styles.partnerDetails}>
                     <h3 className={styles.partnerName}>
-                      {status.partnership?.partner.display_name}
+                      {status.partnership?.partner.displayName}
                     </h3>
                     <p className={styles.partnerEmail}>
                       {status.partnership?.partner.email}
                     </p>
                     <p className={styles.partnershipDate}>
-                      {status.partnership?.created_at && 
-                        `${new Date(status.partnership.created_at).toLocaleDateString('ja-JP')}から`
+                      {status.partnership?.createdAt && 
+                        `${new Date(status.partnership.createdAt).toLocaleDateString('ja-JP')}から`
                       }
                     </p>
                   </div>

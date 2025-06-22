@@ -3,7 +3,19 @@ import { useAuth } from '../../contexts/AuthContext';
 import { PageLayout } from '../../components/layout/PageLayout';
 import { dashboardService } from '../../services/dashboard';
 import { transactionService } from '../../services/transactionService';
+import { loveService } from '../../services/loveService';
 import { DashboardSummary, Transaction, CategoryBreakdown } from '../../types';
+import { LoveGoalWithProgress } from '../../types/love';
+import { WelcomeModal } from '../../components/welcome/WelcomeModal';
+import { ErrorMessage } from '../../components/common/ErrorMessage';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner';
+import { useErrorHandler, ErrorState } from '../../hooks/useErrorHandler';
+import {
+  SkeletonDashboardSummary,
+  SkeletonChart,
+  SkeletonTransactionList,
+  SkeletonLoveGoals
+} from '../../components/common/Skeleton';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -33,8 +45,11 @@ const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([]);
   const [categoryBreakdown, setCategoryBreakdown] = useState<CategoryBreakdown[]>([]);
+  const [loveGoals, setLoveGoals] = useState<LoveGoalWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorState | null>(null);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const { handleError } = useErrorHandler();
 
   useEffect(() => {
     loadDashboardData();
@@ -49,20 +64,36 @@ const Dashboard: React.FC = () => {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
 
-      // 月次サマリー、カテゴリ別内訳、最近の取引を並行で取得
-      const [summaryData, categoryData, transactionsData] = await Promise.all([
+      // 月次サマリー、カテゴリ別内訳、最近の取引、Love Goalsを並行で取得
+      const [summaryData, categoryData, transactionsData, goalsData] = await Promise.all([
         dashboardService.getMonthSummary(year, month),
         dashboardService.getCategoryBreakdown(year, month),
-        transactionService.getTransactions(1)
+        transactionService.getTransactions(1),
+        loveService.getGoals({ isActive: true }).catch(() => []) // エラー時は空配列
       ]);
 
       setSummary(summaryData);
       setCategoryBreakdown(categoryData);
       // 最新10件のみ表示
       setRecentTransactions(transactionsData.transactions.slice(0, 10));
+      // 最初の2つのLove Goalsのみ表示
+      setLoveGoals(goalsData.slice(0, 2));
+      
+      // 初回ログインかどうかをチェック（取引がない場合）
+      const isFirstLogin = transactionsData.transactions.length === 0;
+      const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+      
+      if (isFirstLogin && !hasSeenWelcome && user) {
+        setShowWelcome(true);
+        localStorage.setItem('hasSeenWelcome', 'true');
+      }
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
-      setError('ダッシュボードデータの読み込みに失敗しました');
+      const errorInfo = handleError(err, {
+        showToast: false, // ダッシュボードではエラーメッセージを直接表示
+        onRetry: loadDashboardData
+      });
+      setError(errorInfo);
     } finally {
       setLoading(false);
     }
@@ -70,20 +101,52 @@ const Dashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className={styles.loading}>
-        <div className={styles.spinner}>読み込み中...</div>
-      </div>
+      <PageLayout>
+        <div className={styles.dashboard}>
+          {/* ヘッダー */}
+          <div className={styles.header}>
+            <div className={styles.greeting}>
+              <h1>💕 こんにちは、{user?.displayName || user?.display_name}さん</h1>
+              <p className={styles.subtitle}>今月も愛のある家計管理を頑張りましょう！</p>
+            </div>
+          </div>
+
+          {/* スケルトンローディング */}
+          <SkeletonDashboardSummary />
+          
+          <div className={styles.contentGrid}>
+            <div className={styles.chartSection}>
+              <SkeletonChart height={300} />
+            </div>
+            
+            <div className={styles.sidebar}>
+              <div className={styles.recentTransactions}>
+                <h2 className={styles.sectionTitle}>💰 最近の取引</h2>
+                <SkeletonTransactionList count={5} />
+              </div>
+              
+              <div className={styles.loveGoals}>
+                <h2 className={styles.sectionTitle}>🎯 Love Goals</h2>
+                <SkeletonLoveGoals count={2} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </PageLayout>
     );
   }
 
   if (error) {
     return (
-      <div className={styles.error}>
-        <p>{error}</p>
-        <button onClick={loadDashboardData} className={styles.retryButton}>
-          再読み込み
-        </button>
-      </div>
+      <PageLayout>
+        <ErrorMessage
+          message={error.message}
+          onRetry={loadDashboardData}
+          isRetryable={error.isRetryable}
+          suggestedAction={error.suggestedAction}
+          fullPage
+        />
+      </PageLayout>
     );
   }
 
@@ -93,7 +156,7 @@ const Dashboard: React.FC = () => {
         {/* ヘッダー */}
         <div className={styles.header}>
         <div className={styles.greeting}>
-          <h1>💕 こんにちは、{user?.display_name}さん</h1>
+          <h1>💕 こんにちは、{user?.displayName || user?.display_name}さん</h1>
           <p className={styles.subtitle}>今月も愛のある家計管理を頑張りましょう！</p>
         </div>
         {user?.partnership && (
@@ -279,34 +342,52 @@ const Dashboard: React.FC = () => {
           {/* Love Goals */}
           <div className={styles.loveGoals}>
             <h2 className={styles.sectionTitle}>🎯 Love Goals</h2>
-            <div className={styles.goalItem}>
-              <div className={styles.goalName}>デート資金</div>
-              <div className={styles.goalProgress}>
-                <div className={styles.progressBar}>
-                  <div className={styles.progressFill} style={{ width: '65%' }}></div>
+            {loveGoals.length === 0 ? (
+              <p className={styles.emptyMessage}>Love Goalsを設定しましょう！</p>
+            ) : (
+              loveGoals.map((goal) => (
+                <div
+                  key={goal.id}
+                  className={`${styles.goalItem} ${goal.isAchieved ? styles.achieved : ''}`}
+                >
+                  <div className={styles.goalName}>
+                    {goal.name}
+                    {goal.isAchieved && ' ✅'}
+                  </div>
+                  <div className={styles.goalProgress}>
+                    <div className={styles.progressBar}>
+                      <div 
+                        className={styles.progressFill} 
+                        style={{ 
+                          width: `${Math.min(goal.progressPercentage, 100)}%`,
+                          backgroundColor: goal.isAchieved ? '#10b981' : undefined
+                        }}
+                      ></div>
+                    </div>
+                    <div className={styles.progressText}>
+                      <span>¥{(goal.spentAmount || 0).toLocaleString()}</span>
+                      <span>¥{(goal.amount || 0).toLocaleString()}</span>
+                    </div>
+                  </div>
+                  {goal.daysRemaining !== undefined && goal.daysRemaining > 0 && (
+                    <div className={styles.goalMeta}>
+                      残り{goal.daysRemaining}日
+                    </div>
+                  )}
                 </div>
-                <div className={styles.progressText}>
-                  <span>¥13,000</span>
-                  <span>¥20,000</span>
-                </div>
-              </div>
-            </div>
-            <div className={`${styles.goalItem} ${styles.love}`}>
-              <div className={styles.goalName}>結婚資金 💍</div>
-              <div className={styles.goalProgress}>
-                <div className={styles.progressBar}>
-                  <div className={styles.progressFill} style={{ width: '35%' }}></div>
-                </div>
-                <div className={styles.progressText}>
-                  <span>¥350,000</span>
-                  <span>¥1,000,000</span>
-                </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </div>
       </div>
       </div>
+      
+      {/* ウェルカムモーダル */}
+      <WelcomeModal
+        isOpen={showWelcome}
+        onClose={() => setShowWelcome(false)}
+        userName={user?.displayName || user?.display_name}
+      />
     </PageLayout>
   );
 };

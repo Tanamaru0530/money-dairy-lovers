@@ -54,7 +54,6 @@ export const AddBudget: React.FC = () => {
   })
   
   const period = watch('period')
-  const isShared = watch('is_shared')
   
   useEffect(() => {
     loadInitialData()
@@ -334,7 +333,7 @@ export const AddBudget: React.FC = () => {
               </p>
             </div>
             
-            {partnershipStatus?.has_partner && (
+            {partnershipStatus?.hasPartner && (
               <div className={styles.checkboxGroup}>
                 <label className={styles.checkbox}>
                   <input

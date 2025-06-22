@@ -1,5 +1,8 @@
 import { User } from './user'
 
+// Re-export User for backward compatibility
+export type { User } from './user'
+
 // Authentication types
 export interface AuthState {
   user: User | null

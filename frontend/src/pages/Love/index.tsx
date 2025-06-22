@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Navigation } from '../../components/common/Navigation'
 import { loveService } from '../../services/loveService'
 import { reportService } from '../../services/reportService'
@@ -15,7 +14,6 @@ import { useAuth } from '../../contexts/AuthContext'
 import styles from './Love.module.scss'
 
 export const Love: React.FC = () => {
-  const navigate = useNavigate()
   const { user } = useAuth()
   const [loveEvents, setLoveEvents] = useState<LoveEvent[]>([])
   const [upcomingEvents, setUpcomingEvents] = useState<LoveEvent[]>([])
@@ -241,9 +239,9 @@ export const Love: React.FC = () => {
 
     const loveSpendingByCategory = loveStats?.loveSpendingByCategory || loveStats?.love_spending_by_category || []
     const categoryChartData = {
-      labels: loveSpendingByCategory.map(cat => `${cat.category_icon} ${cat.category_name}`),
+      labels: loveSpendingByCategory.map(cat => `${(cat as any).categoryIcon || (cat as any).category_icon} ${(cat as any).categoryName || (cat as any).category_name}`),
       datasets: [{
-        data: loveSpendingByCategory.map(cat => cat.total_amount),
+        data: loveSpendingByCategory.map(cat => (cat as any).totalAmount || (cat as any).total_amount),
         backgroundColor: ['#FF69B4', '#FF1493', '#FF6347', '#FFB6C1', '#FFC0CB'],
       }]
     }

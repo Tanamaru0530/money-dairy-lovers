@@ -1,5 +1,6 @@
 @import '../../styles/variables.scss';
 @import '../../styles/variables-theme.scss';
+@import '../../styles/mixins.scss';
 
 .btn {
   display: inline-flex;
@@ -18,6 +19,8 @@
   overflow: hidden;
   font-family: $font-primary;
   gap: $spacing-2;
+  @include touch-optimized;
+  @include touch-feedback;
 
   &::before {
     content: '';
@@ -108,18 +111,31 @@
     padding: $spacing-2 $spacing-4;
     font-size: $text-sm;
     border-radius: $radius-md;
+    
+    @include touch-device {
+      padding: $spacing-2 $spacing-3;
+      min-height: 36px;
+    }
   }
 
   &--lg {
     padding: $spacing-4 $spacing-8;
     font-size: $text-lg;
     border-radius: $radius-xl;
+    
+    @include touch-device {
+      min-height: 48px;
+    }
   }
 
   &--xl {
     padding: $spacing-5 $spacing-10;
     font-size: $text-xl;
     border-radius: $radius-2xl;
+    
+    @include touch-device {
+      min-height: 56px;
+    }
   }
 
   // States

@@ -7,6 +7,7 @@ import { transactionService } from '../../services/transactionService';
 import { categoryService } from '../../services/categoryService';
 import { TransactionFilter, PaginatedTransactions, TransactionStats } from '../../types/transaction';
 import { CategoryWithStats } from '../../types/category';
+import { Skeleton } from '../../components/common/Skeleton';
 import styles from './Transactions.module.scss';
 
 export const Transactions: React.FC = () => {
@@ -94,7 +95,24 @@ export const Transactions: React.FC = () => {
           </div>
         </div>
 
-      {monthlyStats && !isLoadingStats && (
+      {isLoadingStats ? (
+        <div className={styles.monthlyStats}>
+          <Skeleton variant="text" width="30%" height={28} style={{ marginBottom: 16 }} />
+          <div className={styles.statsGrid}>
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className={styles.statCard}>
+                <Skeleton variant="circular" width={40} height={40} />
+                <Skeleton variant="text" width="60%" height={16} style={{ marginTop: 8 }} />
+                <Skeleton variant="text" width="80%" height={24} style={{ marginTop: 4 }} />
+              </div>
+            ))}
+          </div>
+          <div className={styles.statDetails}>
+            <Skeleton variant="text" width="45%" height={16} />
+            <Skeleton variant="text" width="45%" height={16} />
+          </div>
+        </div>
+      ) : monthlyStats && (
         <div className={styles.monthlyStats}>
           <h2 className={styles.statsTitle}>
             {monthlyStats.year}年{monthlyStats.month}月の収支

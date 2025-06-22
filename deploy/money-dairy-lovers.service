@@ -1,0 +1,17 @@
+[Unit]
+Description=Money Dairy Lovers
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=ubuntu
+Group=docker
+WorkingDirectory=/home/ubuntu/money-dairy-lovers
+ExecStart=/usr/bin/docker compose --env-file .env.production up -d
+ExecStop=/usr/bin/docker compose down
+ExecReload=/usr/bin/docker compose restart
+
+[Install]
+WantedBy=multi-user.target

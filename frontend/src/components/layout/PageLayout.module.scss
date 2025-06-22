@@ -12,4 +12,8 @@
   @include mobile {
     padding-top: 70px; // モバイルでは少し狭く
   }
+  
+  @include touch-device {
+    padding-bottom: 80px; // ボトムナビゲーション用の余白
+  }
 }

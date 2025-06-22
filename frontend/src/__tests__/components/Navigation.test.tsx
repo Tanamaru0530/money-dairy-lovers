@@ -21,12 +21,12 @@ vi.mock('react-router-dom', async () => {
 const mockUser: User = {
   id: '1',
   email: 'test@example.com',
-  display_name: 'テストユーザー',
-  is_active: true,
-  email_verified: true,
-  love_theme_preference: 'default',
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
+  displayName: 'テストユーザー',
+  loveThemePreference: 'default',
+  notificationSettings: { email: true, push: true },
+  hasPartner: false,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 const mockAuth = {

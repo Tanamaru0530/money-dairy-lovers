@@ -34,6 +34,7 @@ const Onboarding = () => (
 
 import { Reports } from './pages/Reports';
 import { Love } from './pages/Love';
+import { LoveGoals } from './pages/Love/LoveGoals';
 import { RecurringTransactions } from './pages/RecurringTransactions';
 import { AddRecurringTransaction } from './pages/RecurringTransactions/AddRecurringTransaction';
 import { Settings } from './pages/Settings';
@@ -156,6 +157,14 @@ const AppContent = () => {
             element={
               <PrivateRoute>
                 <Love />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/love/goals"
+            element={
+              <PrivateRoute>
+                <LoveGoals />
               </PrivateRoute>
             }
           />

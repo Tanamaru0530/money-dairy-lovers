@@ -11,7 +11,7 @@ vi.mock('../services/authService', () => ({
     getCurrentUser: vi.fn(),
     refreshToken: vi.fn(),
     clearTokens: vi.fn(),
-    getTokens: vi.fn(() => null), // Start with no auth
+    isAuthenticated: vi.fn(() => false), // Start with no auth
   },
 }));
 
@@ -33,20 +33,16 @@ describe('App Routing', () => {
   it('shows dashboard when authenticated', async () => {
     const authService = await import('../services/authService');
     // Mock authenticated state
-    vi.mocked(authService.default.getTokens).mockReturnValue({
-      accessToken: 'test-token',
-      refreshToken: 'test-refresh',
-    });
+    vi.mocked(authService.default.isAuthenticated).mockReturnValue(true);
     vi.mocked(authService.default.getCurrentUser).mockResolvedValue({
       id: '1',
       email: 'test@example.com',
-      display_name: 'テストユーザー',
-      is_active: true,
-      email_verified: true,
-      love_theme_preference: 'default',
-      notification_settings: { email: true, push: true },
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      displayName: 'テストユーザー',
+      hasPartner: false,
+      loveThemePreference: 'default',
+      notificationSettings: { email: true, push: true },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
 
     render(<App />);
@@ -66,10 +62,7 @@ describe('App Routing', () => {
     });
     
     vi.mocked(authService.default.getCurrentUser).mockReturnValue(authPromise as any);
-    vi.mocked(authService.default.getTokens).mockReturnValue({
-      accessToken: 'test-token',
-      refreshToken: 'test-refresh',
-    });
+    vi.mocked(authService.default.isAuthenticated).mockReturnValue(true);
 
     render(<App />);
 
@@ -80,13 +73,12 @@ describe('App Routing', () => {
     resolveAuth!({
       id: '1',
       email: 'test@example.com',
-      display_name: 'テストユーザー',
-      is_active: true,
-      email_verified: true,
-      love_theme_preference: 'default',
-      notification_settings: { email: true, push: true },
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      displayName: 'テストユーザー',
+      hasPartner: false,
+      loveThemePreference: 'default',
+      notificationSettings: { email: true, push: true },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
 
     // Should show dashboard after auth resolves
@@ -109,20 +101,16 @@ describe('App Routing', () => {
   it('renders authenticated pages when user is logged in', async () => {
     const authService = await import('../services/authService');
     // Mock authenticated state
-    vi.mocked(authService.default.getTokens).mockReturnValue({
-      accessToken: 'test-token',
-      refreshToken: 'test-refresh',
-    });
+    vi.mocked(authService.default.isAuthenticated).mockReturnValue(true);
     vi.mocked(authService.default.getCurrentUser).mockResolvedValue({
       id: '1',
       email: 'test@example.com',
-      display_name: 'テストユーザー',
-      is_active: true,
-      email_verified: true,
-      love_theme_preference: 'default',
-      notification_settings: { email: true, push: true },
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      displayName: 'テストユーザー',
+      hasPartner: false,
+      loveThemePreference: 'default',
+      notificationSettings: { email: true, push: true },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
 
     render(<App />);

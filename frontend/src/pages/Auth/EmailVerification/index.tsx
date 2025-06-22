@@ -23,7 +23,7 @@ export const EmailVerification: React.FC = () => {
     }
     
     // 既にメール確認済みの場合はダッシュボードへ
-    if (user.emailVerified) {
+    if (user.email_verified) {
       toast.info('メールアドレスは既に確認済みです');
       navigate('/dashboard');
     }

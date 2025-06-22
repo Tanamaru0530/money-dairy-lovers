@@ -1,10 +1,13 @@
 import { Category } from './category';
 import { User } from './user';
+import { PaginationInfo } from './common';
 
 export interface Transaction {
   id: string;
   user_id: string;
   userId?: string;
+  category_id: string;
+  categoryId?: string;
   amount: number;
   transaction_type: 'income' | 'expense';
   transactionType?: 'income' | 'expense';
@@ -17,9 +20,29 @@ export interface Transaction {
   transactionDate?: string;
   receipt_image_url?: string;
   receiptImageUrl?: string;
+  love_rating?: number;
+  loveRating?: number;
   tags?: string[];
   location?: string;
   category: Category;
+  shared_info?: {
+    split_type: 'equal' | 'amount' | 'percentage';
+    splitType?: 'equal' | 'amount' | 'percentage';
+    user1_amount?: number;
+    user1Amount?: number;
+    user2_amount?: number;
+    user2Amount?: number;
+    payer_user_id?: string;
+    payerUserId?: string;
+    notes?: string;
+  };
+  sharedInfo?: {
+    splitType: 'equal' | 'amount' | 'percentage';
+    user1Amount?: number;
+    user2Amount?: number;
+    payerUserId?: string;
+    notes?: string;
+  };
   shared_transaction?: SharedTransaction;
   sharedTransaction?: SharedTransaction;
   payer?: User;
@@ -86,6 +109,30 @@ export interface TransactionStats {
   personalExpense?: number;
   sharedExpense?: number;
   loveExpense?: number;
+}
+
+export interface TransactionCreate {
+  category_id: string;
+  amount: number;
+  transaction_type: 'income' | 'expense';
+  sharing_type: 'personal' | 'shared';
+  payment_method?: 'cash' | 'credit_card' | 'bank_transfer' | 'digital_wallet';
+  description?: string;
+  transaction_date: string;
+  love_rating?: number;
+  tags?: string[];
+  location?: string;
+  shared_info?: {
+    split_type: 'equal' | 'amount' | 'percentage';
+    user1_amount?: number;
+    user2_amount?: number;
+    notes?: string;
+  };
+}
+
+export interface TransactionResponse {
+  transactions: Transaction[];
+  pagination: PaginationInfo;
 }
 
 export interface PaginatedTransactions {

@@ -50,7 +50,7 @@ export const Navigation: React.FC = () => {
   return (
     <>
       {/* メール未確認の警告バナー */}
-      {user && !user.emailVerified && (
+      {user && !user.email_verified && (
         <div className={styles.emailWarningBanner}>
           <span className={styles.warningIcon}>⚠️</span>
           <span className={styles.warningText}>

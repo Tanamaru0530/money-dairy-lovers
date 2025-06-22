@@ -130,8 +130,13 @@ apiClient.interceptors.response.use(
             refresh_token: refreshToken,
           });
           
-          const { access_token, refresh_token } = response.data;
+          const { access_token, refresh_token, user } = response.data;
           tokenManager.setTokens(access_token, refresh_token);
+          
+          // ユーザー情報を更新（AuthContextのメソッドを呼び出し）
+          if (user && typeof window !== 'undefined' && (window as any).__updateUserFromTokenRefresh) {
+            (window as any).__updateUserFromTokenRefresh(user);
+          }
           
           originalRequest.headers.Authorization = `Bearer ${access_token}`;
           return apiClient(originalRequest);

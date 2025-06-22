@@ -30,6 +30,63 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
+def check_love_goals_achievement(db: Session, user: models.User):
+    """Love Goals達成チェックと通知作成"""
+    # アクティブなLove Goalsを取得
+    love_goals = db.query(models.Budget).filter(
+        models.Budget.user_id == user.id,
+        models.Budget.is_love_budget == True,
+        models.Budget.is_active == True
+    ).all()
+    
+    for goal in love_goals:
+        # 期間内の支出を計算
+        query = db.query(
+            func.coalesce(func.sum(models.Transaction.amount), 0)
+        ).filter(
+            models.Transaction.user_id == user.id,
+            models.Transaction.transaction_type == 'expense',
+            models.Transaction.transaction_date >= goal.start_date
+        )
+        
+        if goal.end_date:
+            query = query.filter(models.Transaction.transaction_date <= goal.end_date)
+        
+        if goal.category_id:
+            query = query.filter(models.Transaction.category_id == goal.category_id)
+        else:
+            # カテゴリ未指定の場合はLoveカテゴリのみ
+            query = query.join(models.Category).filter(models.Category.is_love_category == True)
+        
+        spent_amount = query.scalar() or 0
+        
+        # 既に通知済みかチェック（同じゴールで既に通知がある場合はスキップ）
+        existing_notification = db.query(models.Notification).filter(
+            models.Notification.user_id == user.id,
+            models.Notification.type == 'love_goal_achieved',
+            models.Notification.data['goal_id'].astext == str(goal.id)
+        ).first()
+        
+        # 新たに達成した場合のみ通知を作成
+        if spent_amount >= goal.amount and not existing_notification:
+            notification = models.Notification(
+                user_id=user.id,
+                type='love_goal_achieved',
+                title='🎉 Love Goal達成！',
+                message=f'目標「{goal.name}」を達成しました！',
+                data={
+                    'goal_id': str(goal.id),
+                    'goal_name': goal.name,
+                    'amount': float(goal.amount),
+                    'spent_amount': float(spent_amount)
+                },
+                priority='high'
+            )
+            db.add(notification)
+    
+    db.commit()
+
+
 def save_receipt_image(file_content: bytes, user_id: UUID) -> str:
     """
     セキュアなレシート画像保存
@@ -459,6 +516,10 @@ def create_transaction(
     
     db.commit()
     db.refresh(transaction)
+    
+    # Love Goal達成チェック（Loveカテゴリの支出の場合）
+    if transaction.transaction_type == 'expense' and category.is_love_category:
+        check_love_goals_achievement(db, current_user)
     
     # 取得して返す
     return get_transaction(db=db, transaction_id=transaction.id, current_user=current_user)

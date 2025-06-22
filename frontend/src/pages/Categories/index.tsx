@@ -5,11 +5,10 @@ import { CategoryCard } from '@/components/category/CategoryCard';
 import { CategoryForm } from '@/components/category/CategoryForm';
 import { categoryService } from '@/services/categoryService';
 import { CategoryWithStats } from '@/types/category';
-import { useAuth } from '@/contexts/AuthContext';
+import { Skeleton, SkeletonCategoryGrid } from '@/components/common/Skeleton';
 import styles from './Categories.module.scss';
 
 export const Categories: React.FC = () => {
-  const { user } = useAuth();
   const [loveCategories, setLoveCategories] = useState<CategoryWithStats[]>([]);
   const [normalCategories, setNormalCategories] = useState<CategoryWithStats[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,10 +93,29 @@ export const Categories: React.FC = () => {
     return (
       <PageLayout>
         <div className={styles.mainContent}>
-          <div className={styles.loadingState}>
-            <div className={styles.loadingSpinner}>💕</div>
-            <p>愛を込めて読み込み中...</p>
+          <div className={styles.pageHeader}>
+            <Skeleton variant="text" width="30%" height={36} />
+            <Skeleton variant="text" width="50%" height={20} style={{ marginTop: 8 }} />
           </div>
+
+          {/* Love カテゴリセクション */}
+          <section className={styles.categorySection}>
+            <Skeleton variant="text" width="20%" height={28} style={{ marginBottom: 8 }} />
+            <Skeleton variant="text" width="40%" height={16} style={{ marginBottom: 24 }} />
+            <SkeletonCategoryGrid count={3} isLove={true} />
+          </section>
+
+          {/* 通常カテゴリセクション */}
+          <section className={styles.categorySection}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <Skeleton variant="text" width="25%" height={28} style={{ marginBottom: 8 }} />
+                <Skeleton variant="text" width="45%" height={16} />
+              </div>
+              <Skeleton variant="button" width={180} height={40} />
+            </div>
+            <SkeletonCategoryGrid count={9} />
+          </section>
         </div>
       </PageLayout>
     );

@@ -187,3 +187,74 @@ $breakpoint-2xl: 1536px;  // 大型デスクトップ
     transform: translateY(0);
   }
 }
+
+// === Touch Device Detection ===
+@mixin touch-device {
+  @media (hover: none) and (pointer: coarse) {
+    @content;
+  }
+}
+
+// === Touch Optimized Button ===
+@mixin touch-optimized {
+  @include touch-device {
+    min-height: 44px;
+    min-width: 44px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+// === Swipeable ===
+@mixin swipeable {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  touch-action: pan-y;
+}
+
+// === Touch Feedback ===
+@mixin touch-feedback($color: rgba($primary-500, 0.1)) {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: $color;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+  }
+  
+  &:active::after {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// === Safe Area Padding ===
+@mixin safe-area-padding {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+// === Bottom Sheet ===
+@mixin bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: $radius-2xl $radius-2xl 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  @include safe-area-padding;
+}

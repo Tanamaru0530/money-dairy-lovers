@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navigation } from '../common/Navigation';
+import { BottomNavigation } from '../navigation/BottomNavigation';
 import styles from './PageLayout.module.scss';
 
 interface PageLayoutProps {
@@ -13,6 +14,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
       <main className={styles.mainContent}>
         {children}
       </main>
+      <BottomNavigation />
     </div>
   );
 };

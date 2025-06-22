@@ -1,5 +1,6 @@
 @import '../../styles/variables.scss';
 @import '../../styles/variables-theme.scss';
+@import '../../styles/mixins.scss';
 
 .input-group {
   display: flex;
@@ -56,6 +57,13 @@
   background-color: white;
   transition: $transition-love;
   font-family: $font-primary;
+  @include touch-optimized;
+  -webkit-appearance: none; // iOSのデフォルトスタイルを無効化
+  
+  @include touch-device {
+    font-size: 16px; // iOSのズーム防止
+    padding: $spacing-3 $spacing-3;
+  }
 
   &:focus {
     outline: none;

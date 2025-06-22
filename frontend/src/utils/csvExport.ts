@@ -41,23 +41,28 @@ const downloadCSV = (csv: string, filename: string) => {
 
 // 取引データをCSVエクスポート
 export const exportTransactionsToCSV = (transactions: Transaction[], filename?: string) => {
-  const data = transactions.map(transaction => ({
-    日付: transaction.transaction_date,
-    タイプ: transaction.transaction_type === 'income' ? '収入' : '支出',
-    カテゴリ: transaction.category?.name || '',
-    金額: transaction.amount,
-    支払い方法: {
+  const data = transactions.map(transaction => {
+    const paymentMethodMap: Record<string, string> = {
       cash: '現金',
       credit_card: 'クレジットカード',
       bank_transfer: '銀行振込',
       digital_wallet: '電子マネー'
-    }[transaction.payment_method] || transaction.payment_method,
-    共有タイプ: transaction.sharing_type === 'shared' ? '共有' : '個人',
-    説明: transaction.description || '',
-    タグ: transaction.tags?.join('、') || ''
-  }));
+    };
+    
+    return {
+      日付: transaction.transaction_date,
+      タイプ: transaction.transaction_type === 'income' ? '収入' : '支出',
+      カテゴリ: transaction.category?.name || '',
+      金額: transaction.amount,
+      支払い方法: transaction.payment_method ? paymentMethodMap[transaction.payment_method] || transaction.payment_method : '',
+      共有タイプ: transaction.sharing_type === 'shared' ? '共有' : '個人',
+      説明: transaction.description || '',
+      タグ: transaction.tags?.join('、') || '',
+      'Love評価': transaction.love_rating || transaction.loveRating || ''
+    };
+  });
 
-  const headers = ['日付', 'タイプ', 'カテゴリ', '金額', '支払い方法', '共有タイプ', '説明', 'タグ'];
+  const headers = ['日付', 'タイプ', 'カテゴリ', '金額', '支払い方法', '共有タイプ', '説明', 'タグ', 'Love評価'];
   const csv = arrayToCSV(data, headers);
   
   const defaultFilename = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
@@ -82,11 +87,11 @@ export const exportMonthlyReportToCSV = (report: MonthlyReport, year: number, mo
   // カテゴリ別データ（snake_caseとcamelCase両方に対応）
   const expenseByCategory = report.expense_by_category || report.expenseByCategory || [];
   const categoryData = expenseByCategory.map(cat => ({
-    カテゴリ: cat.category_name || cat.categoryName || '',
-    金額: cat.total_amount || cat.totalAmount || 0,
+    カテゴリ: cat.categoryName || '',
+    金額: cat.totalAmount || 0,
     割合: `${Math.round(cat.percentage || 0)}%`,
-    取引数: cat.transaction_count || cat.transactionCount || 0,
-    Love: (cat.is_love_category || cat.isLoveCategory) ? '○' : ''
+    取引数: cat.transactionCount || 0,
+    Love: cat.isLoveCategory ? '○' : ''
   }));
 
   // CSVを生成
