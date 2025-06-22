@@ -39,12 +39,29 @@ interface AuthResponse {
   };
 }
 
+// メールアドレスマスク関数
+const maskEmail = (email: string): string => {
+  const [user, domain] = email.split('@');
+  if (user && domain) {
+    return `${user.charAt(0)}***@${domain}`;
+  }
+  return '***';
+};
+
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    console.log('[authService] Login attempt with:', credentials.email);
+    // 開発環境でのみ、マスクされたメールでログ出力
+    if (import.meta.env.DEV) {
+      console.log('[authService] Login attempt with:', maskEmail(credentials.email));
+    }
+    
     try {
       const response = await api.post<AuthResponse>('/auth/login', credentials);
-      console.log('[authService] Login successful:', response.data);
+      
+      // 開発環境でのみ成功ログ（機密情報は除く）
+      if (import.meta.env.DEV) {
+        console.log('[authService] Login successful for:', maskEmail(credentials.email));
+      }
 
       const data = response.data;
       // APIのcamelCase変換を考慮
@@ -52,19 +69,24 @@ export const authService = {
       const refreshToken = data.refresh_token || (data as any).refreshToken;
       
       if (!accessToken || !refreshToken) {
-        console.error('[authService] Token not found in response:', data);
+        if (import.meta.env.DEV) {
+          console.error('[authService] Token not found in response');
+        }
         throw new Error('認証トークンが取得できませんでした');
       }
       
       tokenManager.setTokens(accessToken, refreshToken);
       
-      // トークンが正しく保存されたか確認
-      console.log('[authService] Tokens saved. Access token exists:', !!tokenManager.getAccessToken());
-      console.log('[authService] Refresh token exists:', !!tokenManager.getRefreshToken());
+      // 開発環境でのみトークンの存在確認
+      if (import.meta.env.DEV) {
+        console.log('[authService] Tokens saved successfully');
+      }
       
       return data;
     } catch (error) {
-      console.log('[authService] Login failed:', error);
+      if (import.meta.env.DEV) {
+        console.log('[authService] Login failed for:', maskEmail(credentials.email));
+      }
       throw error;
     }
   },

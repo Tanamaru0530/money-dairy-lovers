@@ -12,10 +12,48 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Security
-    SECRET_KEY: str = secrets.token_urlsafe(32)
+    SECRET_KEY: str = ""
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
+    
+    @field_validator("SECRET_KEY", mode="before")
+    @classmethod
+    def validate_secret_key(cls, v: str) -> str:
+        """
+        SECRET_KEYを検証・生成
+        """
+        if v:
+            # 環境変数から取得できた場合
+            if len(v) < 32:
+                raise ValueError("SECRET_KEY must be at least 32 characters long")
+            return v
+        
+        # 環境変数にない場合の処理
+        env_secret = os.getenv("SECRET_KEY")
+        if env_secret:
+            if len(env_secret) < 32:
+                raise ValueError("SECRET_KEY must be at least 32 characters long")
+            return env_secret
+        
+        # 開発環境でのみ自動生成を許可
+        environment = os.getenv("ENVIRONMENT", "development")
+        if environment == "development":
+            # 開発環境では警告を出しつつ一時的なキーを生成
+            import warnings
+            warnings.warn(
+                "SECRET_KEY not set in environment variables. "
+                "Using temporary key for development. "
+                "Set SECRET_KEY environment variable for production.",
+                UserWarning
+            )
+            return secrets.token_urlsafe(32)
+        
+        # 本番環境ではエラー
+        raise ValueError(
+            "SECRET_KEY environment variable is required for production. "
+            "Please set a secure random key of at least 32 characters."
+        )
     
     # Database
     DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/money_dairy_lovers"

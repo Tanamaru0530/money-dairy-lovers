@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 from typing import Any, Optional
-from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
@@ -14,13 +14,16 @@ from app.core import security
 from app.core.config import settings
 from app.core.deps import get_db, get_current_user
 from app.utils.email import email_sender
+from app.utils.rate_limiter import limiter, RateLimits
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
 @router.post("/register", response_model=schemas.User)
+@limiter.limit(RateLimits.AUTH_REGISTER)
 def register(
+    request: Request,
     *,
     user_in: schemas.UserCreate,
     background_tasks: BackgroundTasks,
@@ -68,21 +71,29 @@ def register(
             verification_code
         )
     else:
-        # 開発環境などメール設定がない場合はログに出力
-        logger.info(f"Email verification code for {user.email}: {verification_code}")
+        # 開発環境でのコード確認（セキュリティ強化: メールをマスク、本番では無効化）
+        if settings.ENVIRONMENT == "development":
+            masked_email = f"{user.email[:1]}***@{user.email.split('@')[1]}" if '@' in user.email else "***"
+            logger.info(f"[DEV ONLY] Email verification code for {masked_email}: {verification_code}")
+        else:
+            logger.info("Email verification code generated (code not logged in production)")
     
     return user
 
 
 @router.post("/login", response_model=schemas.auth.LoginResponse)
+@limiter.limit(RateLimits.AUTH_LOGIN)
 def login(
+    request: Request,
     login_data: schemas.auth.LoginRequest,
     db: Session = Depends(get_db)
 ) -> Any:
     """
     Token login, get an access token for future requests.
     """
-    logger.info(f"Login attempt for email: {login_data.email}")
+    # セキュリティ強化: メールアドレスをマスクしてログ出力
+    masked_email = f"{login_data.email[:1]}***@{login_data.email.split('@')[1]}" if '@' in login_data.email else "***"
+    logger.info(f"Login attempt for email: {masked_email}")
     user = db.query(models.User).filter(models.User.email == login_data.email).first()
     
     if not user or not security.verify_password(login_data.password, user.hashed_password):
@@ -116,7 +127,9 @@ def login(
 
 
 @router.post("/refresh", response_model=schemas.auth.AuthResponse)
+@limiter.limit(RateLimits.AUTH_REFRESH)
 def refresh_token(
+    request: Request,
     *,
     refresh_request: schemas.auth.TokenRefreshRequest,
     db: Session = Depends(get_db)
@@ -337,7 +350,9 @@ def confirm_email_verification(
 
 
 @router.post("/password-reset/request", response_model=schemas.auth.PasswordResetResponse)
+@limiter.limit(RateLimits.AUTH_PASSWORD_RESET)
 def request_password_reset(
+    request: Request,
     *,
     reset_request: schemas.auth.PasswordResetRequest,
     background_tasks: BackgroundTasks,

@@ -36,10 +36,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loadUser = useCallback(async () => {
     try {
       const token = tokenManager.getAccessToken()
-      console.log('AuthContext - loadUser - token:', token ? 'exists' : 'none');
+      
+      // 開発環境でのみログ出力
+      if (import.meta.env.DEV) {
+        console.log('AuthContext - loadUser - token exists:', !!token);
+      }
       
       if (!token) {
-        console.log('AuthContext - No token, setting unauthenticated');
+        if (import.meta.env.DEV) {
+          console.log('AuthContext - No token, setting unauthenticated');
+        }
         setState({
           user: null,
           isAuthenticated: false,
@@ -48,9 +54,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return
       }
 
-      console.log('AuthContext - Getting current user...');
+      if (import.meta.env.DEV) {
+        console.log('AuthContext - Getting current user...');
+      }
       const user = await authService.getCurrentUser()
-      console.log('AuthContext - User loaded:', user?.email);
+      
+      // メールアドレスをマスクして表示
+      if (import.meta.env.DEV && user?.email) {
+        const [userPart, domain] = user.email.split('@');
+        const maskedEmail = userPart ? `${userPart.charAt(0)}***@${domain}` : '***';
+        console.log('AuthContext - User loaded with email:', maskedEmail);
+      }
       
       setState({
         user,
@@ -58,7 +72,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isLoading: false,
       })
     } catch (error) {
-      console.log('AuthContext - loadUser error:', error);
+      if (import.meta.env.DEV) {
+        console.log('AuthContext - loadUser error');
+      }
       tokenManager.clearTokens()
       setState({
         user: null,

@@ -8,6 +8,9 @@ import logging
 import os
 
 from app.core.config import settings
+from app.utils.rate_limiter import limiter, rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from app.middleware.security import SecurityHeadersMiddleware, RequestLoggingMiddleware
 from app.api.auth import auth
 from app.api.partnerships import partnerships
 from app.api.categories.categories import router as categories_router
@@ -41,13 +44,28 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS設定
+# Rate limiting state を追加
+app.state.limiter = limiter
+
+# Rate limit exception handler を追加
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
+
+# セキュリティミドルウェアを追加
+app.add_middleware(
+    SecurityHeadersMiddleware,
+    debug=(settings.ENVIRONMENT == "development")
+)
+
+# リクエストロギングミドルウェアを追加
+app.add_middleware(RequestLoggingMiddleware)
+
+# CORS設定（セキュリティ強化）
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # 具体的なメソッドを指定
+    allow_headers=["Authorization", "Content-Type", "Accept", "X-Requested-With"],  # 必要なヘッダーのみ
 )
 
 

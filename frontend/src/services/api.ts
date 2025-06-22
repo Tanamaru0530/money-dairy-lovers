@@ -30,18 +30,47 @@ export const tokenManager = {
   },
 };
 
+// ログ用のデータサニタイズ関数
+const sanitizeLogData = (data: any, url?: string): any => {
+  if (!data || typeof data !== 'object') return data;
+  
+  const sensitiveFields = ['password', 'token', 'access_token', 'refresh_token', 'code', 'verification_code'];
+  const sanitized = { ...data };
+  
+  // 認証関連URLでは特に厳格にサニタイズ
+  if (url?.includes('auth')) {
+    Object.keys(sanitized).forEach(key => {
+      if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
+        sanitized[key] = '[REDACTED]';
+      }
+      // メールアドレスをマスク
+      if (key.toLowerCase().includes('email') && typeof sanitized[key] === 'string') {
+        const email = sanitized[key];
+        const [user, domain] = email.split('@');
+        if (user && domain) {
+          sanitized[key] = `${user.charAt(0)}***@${domain}`;
+        }
+      }
+    });
+  }
+  
+  return sanitized;
+};
+
 // リクエストインターセプター
 apiClient.interceptors.request.use(
   (config) => {
     const token = tokenManager.getAccessToken();
-    // 認証関連とトランザクション関連のAPIのログ出力
-    if (config.url?.includes('auth') || config.url?.includes('transaction')) {
+    
+    // 開発環境でのみログ出力
+    if (import.meta.env.DEV && (config.url?.includes('auth') || config.url?.includes('transaction'))) {
       console.log('[API Request]:', config.method?.toUpperCase(), config.url);
-      console.log('[API Request] Token exists:', !!token);
+      console.log('[API Request] Has token:', !!token);
       if (config.data) {
-        console.log('[API Request] Data:', config.data);
+        console.log('[API Request] Data:', sanitizeLogData(config.data, config.url));
       }
     }
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -62,51 +91,24 @@ apiClient.interceptors.request.use(
 // レスポンスインターセプター
 apiClient.interceptors.response.use(
   (response) => {
-    // 認証関連のレスポンスをデバッグ
-    if (response.config.url?.includes('auth')) {
-      console.log('[API Response] Original:', response.data);
-    }
-    
-    // 取引関連のレスポンスをデバッグ
-    if (response.config.url?.includes('transactions')) {
-      console.log('[API Response] Original transaction data:', response.data);
-      if (response.data?.transactions && response.data.transactions.length > 0) {
-        console.log('[API Response] First transaction before conversion:', response.data.transactions[0]);
-      }
-    }
-    
-    // 定期取引関連のレスポンスをデバッグ
-    if (response.config.url?.includes('recurring-transactions')) {
-      console.log('[API Response] Original recurring transaction data:', response.data);
-      if (response.data?.recurring_transactions && response.data.recurring_transactions.length > 0) {
-        console.log('[API Response] First recurring transaction before conversion:', response.data.recurring_transactions[0]);
+    // 開発環境でのみログ出力（認証レスポンスはサニタイズ）
+    if (import.meta.env.DEV) {
+      if (response.config.url?.includes('auth')) {
+        console.log('[API Response] Auth endpoint:', response.config.url);
+        const sanitizedData = sanitizeLogData(response.data, response.config.url);
+        console.log('[API Response] Data (sanitized):', sanitizedData);
+      } else if (response.config.url?.includes('transactions')) {
+        console.log('[API Response] Transaction endpoint success');
+        // 取引データはサニタイズしないが、数のみログ
+        if (response.data?.transactions) {
+          console.log('[API Response] Transactions count:', response.data.transactions.length);
+        }
       }
     }
     
     // レスポンスデータをcamelCaseに変換
     if (response.data && typeof response.data === 'object') {
       response.data = convertKeysToCamelCase(response.data);
-      
-      // 変換後の認証レスポンスをデバッグ
-      if (response.config.url?.includes('auth')) {
-        console.log('[API Response] After camelCase conversion:', response.data);
-      }
-      
-      // 変換後の取引レスポンスをデバッグ
-      if (response.config.url?.includes('transactions')) {
-        console.log('[API Response] After camelCase conversion:', response.data);
-        if (response.data?.transactions && response.data.transactions.length > 0) {
-          console.log('[API Response] First transaction after conversion:', response.data.transactions[0]);
-        }
-      }
-      
-      // 変換後の定期取引レスポンスをデバッグ
-      if (response.config.url?.includes('recurring-transactions')) {
-        console.log('[API Response] After camelCase conversion:', response.data);
-        if (response.data?.recurringTransactions && response.data.recurringTransactions.length > 0) {
-          console.log('[API Response] First recurring transaction after conversion:', response.data.recurringTransactions[0]);
-        }
-      }
     }
     return response;
   },

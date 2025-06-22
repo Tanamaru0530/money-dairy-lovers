@@ -1,11 +1,12 @@
 from typing import Any, List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import and_, or_, func, extract
 from datetime import date, datetime
 from uuid import UUID
 import base64
 import os
+import logging
 
 from app import schemas, models
 from app.core.deps import get_db, get_current_user
@@ -17,33 +18,79 @@ from app.schemas.transaction import (
     TransactionFilter
 )
 from app.api.partnerships.partnerships import get_user_partnership
+from app.utils.file_security import (
+    validate_file_content,
+    generate_secure_filename,
+    create_secure_upload_directory,
+    scan_for_malware
+)
+from app.utils.rate_limiter import limiter, RateLimits
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 def save_receipt_image(file_content: bytes, user_id: UUID) -> str:
-    """レシート画像を保存してURLを返す"""
-    # ファイル名を生成
-    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
-    filename = f"{user_id}_{timestamp}.jpg"
+    """
+    セキュアなレシート画像保存
     
-    # 保存先ディレクトリ
-    upload_dir = "uploads/receipts"
-    os.makedirs(upload_dir, exist_ok=True)
-    
-    # ファイルパス
-    file_path = os.path.join(upload_dir, filename)
-    
-    # ファイルを保存
-    with open(file_path, 'wb') as f:
-        f.write(file_content)
-    
-    # URLを返す（実際の環境では適切なURLに変更）
-    return f"{settings.BACKEND_URL}/uploads/receipts/{filename}"
+    Args:
+        file_content: ファイル内容（バイト）
+        user_id: ユーザーID
+        
+    Returns:
+        保存されたファイルのURL
+        
+    Raises:
+        HTTPException: ファイルが無効な場合
+    """
+    try:
+        # ファイル内容を検証
+        mime_type, extension = validate_file_content(file_content)
+        
+        # マルウェアスキャン
+        if not scan_for_malware(file_content):
+            logger.warning(f"Malicious file detected for user {user_id}")
+            raise HTTPException(
+                status_code=400,
+                detail="危険なファイルが検出されました"
+            )
+        
+        # セキュアなファイル名を生成
+        filename = generate_secure_filename(user_id, mime_type, file_content)
+        
+        # セキュアなディレクトリを作成
+        upload_dir = create_secure_upload_directory("uploads/receipts", user_id)
+        
+        # ファイルパス
+        file_path = os.path.join(upload_dir, filename)
+        
+        # ファイルを保存（セキュアな権限で）
+        with open(file_path, 'wb') as f:
+            f.write(file_content)
+        
+        # ファイル権限を制限
+        os.chmod(file_path, 0o644)
+        
+        # URLを返す
+        relative_path = os.path.relpath(file_path, "uploads")
+        return f"{settings.BACKEND_URL}/uploads/{relative_path}"
+        
+    except HTTPException:
+        # 既知のHTTPException は再発生
+        raise
+    except Exception as e:
+        logger.error(f"File upload error for user {user_id}: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="ファイルの保存中にエラーが発生しました"
+        )
 
 
 @router.get("/", response_model=dict)
+@limiter.limit(RateLimits.API_READ)
 def get_transactions(
+    request: Request,
     *,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
@@ -302,7 +349,9 @@ def get_transaction(
 
 
 @router.post("/", response_model=TransactionWithDetails)
+@limiter.limit(RateLimits.API_WRITE)
 def create_transaction(
+    request: Request,
     *,
     db: Session = Depends(get_db),
     transaction_in: TransactionCreate,
@@ -344,14 +393,35 @@ def create_transaction(
     # レシート画像がある場合
     if transaction_in.receipt_image:
         try:
-            # Base64デコード
-            image_data = base64.b64decode(transaction_in.receipt_image)
-            # 画像を保存
+            # Base64デコード（入力検証付き）
+            if not transaction_in.receipt_image.strip():
+                raise HTTPException(
+                    status_code=400,
+                    detail="画像データが空です"
+                )
+            
+            # Base64形式の検証とデコード
+            try:
+                image_data = base64.b64decode(transaction_in.receipt_image)
+            except Exception:
+                raise HTTPException(
+                    status_code=400,
+                    detail="無効なBase64形式です"
+                )
+            
+            # 画像を保存（セキュアな検証付き）
             receipt_url = save_receipt_image(image_data, current_user.id)
             transaction.receipt_image_url = receipt_url
+            
+        except HTTPException:
+            # HTTPExceptionは再発生
+            raise
         except Exception as e:
-            # エラーログを記録（実際の実装では適切なログ記録を行う）
-            pass
+            logger.error(f"Unexpected error processing receipt image for user {current_user.id}: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail="画像の処理中にエラーが発生しました"
+            )
     
     db.add(transaction)
     db.flush()  # IDを取得するため
@@ -450,7 +520,9 @@ def update_transaction(
 
 
 @router.delete("/{transaction_id}")
+@limiter.limit(RateLimits.API_DELETE)
 def delete_transaction(
+    request: Request,
     *,
     db: Session = Depends(get_db),
     transaction_id: UUID,
